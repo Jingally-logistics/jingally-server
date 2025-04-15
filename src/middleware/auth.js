@@ -15,6 +15,8 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ error: 'Authentication required' });
     }
 
+    console.log('Received token: ', token);
+
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findOne({ where: { id: decoded.id } });
@@ -27,6 +29,7 @@ const auth = async (req, res, next) => {
       req.user = user;
       next();
     } catch (jwtError) {
+      console.error('JWT verification error:', jwtError);
       if (jwtError.name === 'JsonWebTokenError') {
         return res.status(401).json({ error: 'Invalid token format' });
       } else if (jwtError.name === 'TokenExpiredError') {
