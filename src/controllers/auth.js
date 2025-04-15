@@ -65,7 +65,9 @@ const login = async (req, res) => {
     }
 
     const token = generateToken(user);
-
+    if(user.isVerified === false){
+      emailVerificationService.sendVerificationEmail(user);
+    }
     res.json({
       user: {
         id: user.id,
