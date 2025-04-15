@@ -66,7 +66,7 @@ const login = async (req, res) => {
 
     const token = generateToken(user);
     if(user.isVerified === false){
-      emailVerificationService.sendVerificationEmail(user);
+      await emailVerificationService.sendVerificationEmail(user);
     }
     res.json({
       user: {
@@ -79,7 +79,7 @@ const login = async (req, res) => {
       token
     });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 };
 
@@ -91,12 +91,14 @@ const verifyEmail = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
+    await emailVerificationService.verifyEmail(user.id, req.body.verificationCode);
+
     user.isVerified = true;
     await user.save();
 
-    res.json({ message: 'Email verified successfully' });
+    return res.json({ message: 'Email verified successfully' });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
 };
 
