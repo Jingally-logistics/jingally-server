@@ -1,13 +1,13 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
 const nodemailer = require('nodemailer');
+const { User } = require('../models');
 
 class EmailVerificationService {
   constructor() {
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,
-      secure: process.env.SMTP_SECURE === 'true',
+      secure: true,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
@@ -39,7 +39,7 @@ class EmailVerificationService {
       to: user.email,
       subject: 'Verify Your Email Address',
       html: `
-        <h1>Welcome to Our Shipping Platform!</h1>
+        <h1>Welcome to Jingally Logistics!</h1>
         <p>Your verification code is:</p>
         <h2 style="font-size: 32px; letter-spacing: 5px; text-align: center; padding: 10px; background-color: #f5f5f5; border-radius: 5px;">${verificationCode}</h2>
         <p>This code will expire in 24 hours.</p>
