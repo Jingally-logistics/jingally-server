@@ -24,7 +24,7 @@ router.use(auth);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -76,11 +76,59 @@ router.use(auth);
  *               price:
  *                 type: number
  *                 description: Shipping price
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *                 description: Package images (optional)
  *     responses:
  *       201:
  *         description: Shipment created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     userId:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                     trackingNumber:
+ *                       type: string
+ *                     images:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                 message:
+ *                   type: string
  *       400:
  *         description: Invalid input data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       field:
+ *                         type: string
+ *                       message:
+ *                         type: string
  *       401:
  *         description: Not authenticated
  */
@@ -99,18 +147,42 @@ router.post('/', shipmentController.createShipment);
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                   status:
- *                     type: string
- *                   trackingNumber:
- *                     type: string
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       status:
+ *                         type: string
+ *                       trackingNumber:
+ *                         type: string
+ *                       pickupAddress:
+ *                         type: object
+ *                       deliveryAddress:
+ *                         type: object
+ *                       packageType:
+ *                         type: string
+ *                       weight:
+ *                         type: number
+ *                       dimensions:
+ *                         type: object
+ *                       scheduledPickupTime:
+ *                         type: string
+ *                         format: date-time
+ *                       images:
+ *                         type: array
+ *                         items:
+ *                           type: string
  *       401:
  *         description: Not authenticated
+ *       500:
+ *         description: Error retrieving shipments
  */
 router.get('/', shipmentController.getUserShipments);
 
@@ -131,10 +203,54 @@ router.get('/', shipmentController.getUserShipments);
  *     responses:
  *       200:
  *         description: Shipment details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                     trackingNumber:
+ *                       type: string
+ *                     pickupAddress:
+ *                       type: object
+ *                     deliveryAddress:
+ *                       type: object
+ *                     packageType:
+ *                       type: string
+ *                     weight:
+ *                       type: number
+ *                     dimensions:
+ *                       type: object
+ *                     scheduledPickupTime:
+ *                       type: string
+ *                       format: date-time
+ *                     images:
+ *                       type: array
+ *                       items:
+ *                         type: string
  *       401:
  *         description: Not authenticated
  *       404:
  *         description: Shipment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error retrieving shipment
  */
 router.get('/:id', shipmentController.getShipmentById);
 /**
@@ -166,12 +282,91 @@ router.get('/:id', shipmentController.getShipmentById);
  *     responses:
  *       200:
  *         description: Shipment status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                 message:
+ *                   type: string
  *       401:
  *         description: Not authenticated
  *       404:
  *         description: Shipment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error updating shipment status
  */
 router.patch('/:id/status', shipmentController.updateShipmentStatus);
+
+/**
+ * @swagger
+ * /shipments/track/{trackingNumber}:
+ *   get:
+ *     tags: [Shipments]
+ *     summary: Track shipment by tracking number
+ *     parameters:
+ *       - in: path
+ *         name: trackingNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shipment tracking details retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     trackingNumber:
+ *                       type: string
+ *                     status:
+ *                       type: string
+ *                     estimatedDeliveryTime:
+ *                       type: string
+ *                       format: date-time
+ *                     pickupAddress:
+ *                       type: object
+ *                     deliveryAddress:
+ *                       type: object
+ *       404:
+ *         description: Shipment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error tracking shipment
+ */
+router.get('/track/:trackingNumber', shipmentController.trackShipment);
 
 /**
  * @swagger
@@ -190,12 +385,41 @@ router.patch('/:id/status', shipmentController.updateShipmentStatus);
  *     responses:
  *       200:
  *         description: Shipment cancelled successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Shipment cannot be cancelled
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
  *       401:
  *         description: Not authenticated
  *       404:
- *         description: Shipment not found
- *       400:
- *         description: Shipment cannot be cancelled
+ *         description: Shipment not found or cannot be cancelled
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error cancelling shipment
  */
 router.post('/:id/cancel', shipmentController.cancelShipment);
 
