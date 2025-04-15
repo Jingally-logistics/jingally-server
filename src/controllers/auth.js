@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
+const emailVerificationService = require('../services/email-verification.service');
 
 // Generate JWT token
 const generateToken = (user) => {
@@ -31,6 +32,7 @@ const register = async (req, res) => {
     });
 
     const token = generateToken(user);
+    await emailVerificationService.sendVerificationEmail(user);
 
     res.status(201).json({
       user: {
