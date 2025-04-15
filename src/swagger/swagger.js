@@ -13,6 +13,10 @@ const options = {
         url: 'http://localhost:9800/api',
         description: 'Development server',
       },
+      {
+        url: "https://jingally-server.onrender.com/api",
+        description: "Live Server"
+      }
     ],
     components: {
       securitySchemes: {
