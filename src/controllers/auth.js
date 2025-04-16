@@ -91,7 +91,7 @@ const verifyEmail = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    await emailVerificationService.verifyEmail(user.id, req.body.verificationCode);
+    //await emailVerificationService.verifyEmail(user.id, req.body.verificationCode);
 
     user.isVerified = true;
     await user.save();
