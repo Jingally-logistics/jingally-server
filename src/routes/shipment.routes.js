@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const shipmentController = require('../controllers/shipment.controller');
 const auth = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 // All shipment routes require authentication
 router.use(auth);
@@ -28,60 +29,23 @@ router.use(auth);
  *           schema:
  *             type: object
  *             required:
- *               - pickupAddress
- *               - deliveryAddress
+ *               - serviceType
  *               - packageType
- *               - weight
- *               - dimensions
- *               - scheduledPickupTime
- *               - price
+ *               - packageDescription
+ *               - fragile
  *             properties:
- *               pickupAddress:
- *                 type: object
- *                 properties:
- *                   street:
- *                     type: string
- *                   city:
- *                     type: string
- *                   country:
- *                     type: string
- *               deliveryAddress:
- *                 type: object
- *                 properties:
- *                   street:
- *                     type: string
- *                   city:
- *                     type: string
- *                   country:
- *                     type: string
+ *               serviceType:
+ *                 type: string
+ *                 description: Type of shipping service (e.g., express, standard)
  *               packageType:
  *                 type: string
  *                 description: Type of package being shipped
- *               weight:
- *                 type: number
- *                 description: Weight of the package in kg
- *               dimensions:
- *                 type: object
- *                 properties:
- *                   length:
- *                     type: number
- *                   width:
- *                     type: number
- *                   height:
- *                     type: number
- *               scheduledPickupTime:
+ *               packageDescription:
  *                 type: string
- *                 format: date-time
- *                 description: Scheduled time for package pickup
- *               price:
- *                 type: number
- *                 description: Shipping price
- *               images:
- *                 type: array
- *                 items:
- *                   type: string
- *                   format: binary
- *                 description: Package images (optional)
+ *                 description: Detailed description of the package contents
+ *               fragile:
+ *                 type: boolean
+ *                 description: Whether the package contains fragile items
  *     responses:
  *       201:
  *         description: Shipment created successfully
@@ -133,6 +97,7 @@ router.use(auth);
  *         description: Not authenticated
  */
 router.post('/', shipmentController.createShipment);
+
 /**
  * @swagger
  * /shipments:
@@ -253,6 +218,7 @@ router.get('/', shipmentController.getUserShipments);
  *         description: Error retrieving shipment
  */
 router.get('/:id', shipmentController.getShipmentById);
+
 /**
  * @swagger
  * /shipments/{id}/status:
@@ -423,4 +389,268 @@ router.get('/track/:trackingNumber', shipmentController.trackShipment);
  */
 router.post('/:id/cancel', shipmentController.cancelShipment);
 
+/**
+ * @swagger
+ * /shipments/{id}/package-dimensions:
+ *   patch:
+ *     tags: [Shipments]
+ *     summary: Update shipment package dimensions
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - dimensions
+ *               - weight
+ *             properties:
+ *               dimensions:
+ *                 type: object
+ *                 description: Package dimensions (length, width, height)
+ *               weight:
+ *                 type: number
+ *                 description: Package weight
+ *     responses:
+ *       200:
+ *         description: Package dimensions updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error updating package dimensions
+ */
+router.patch('/:id/package-dimensions', shipmentController.updateShipmentPackageDimensionsById);
+
+/**
+ * @swagger
+ * /shipments/{id}/photos:
+ *   patch:
+ *     tags: [Shipments]
+ *     summary: Update shipment photos
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file to upload
+ *     responses:
+ *       200:
+ *         description: Photos updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error updating photos
+ */
+router.patch('/:id/photos', 
+  upload.array('file'), // Use 'file' as the field name
+  shipmentController.updateShipmentPhotoById
+);
+
+/**
+ * @swagger
+ * /shipments/{id}/delivery-address:
+ *   patch:
+ *     tags: [Shipments]
+ *     summary: Update shipment delivery address
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - deliveryAddress
+ *               - pickupAddress
+ *               - receiverName
+ *               - receiverPhoneNumber
+ *             properties:
+ *               deliveryAddress:
+ *                 type: object
+ *                 description: Delivery address details
+ *               pickupAddress:
+ *                 type: object
+ *                 description: Pickup address details
+ *               receiverName:
+ *                 type: string
+ *                 description: Name of the receiver
+ *               receiverPhoneNumber:
+ *                 type: string
+ *                 description: Phone number of the receiver
+ *     responses:
+ *       200:
+ *         description: Delivery address updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error updating delivery address
+ */
+router.patch('/:id/delivery-address', shipmentController.updateShipmentDeliveryAddressById);
+
+/**
+ * @swagger
+ * /shipments/{id}/payment-status:
+ *   patch:
+ *     tags: [Shipments]
+ *     summary: Update shipment payment status
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - paymentStatus
+ *             properties:
+ *               paymentStatus:
+ *                 type: string
+ *                 enum: [pending, paid, failed]
+ *                 description: Payment status of the shipment
+ *     responses:
+ *       200:
+ *         description: Payment status updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error updating payment status
+ */
+router.patch('/:id/payment-status', shipmentController.updateShipmentPaymentStatusById);
+
+/**
+ * @swagger
+ * /shipments/{id}/pickup-date-time:
+ *   patch:
+ *     tags: [Shipments]
+ *     summary: Update shipment pickup date and time
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - scheduledPickupTime
+ *             properties:
+ *               scheduledPickupTime:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Scheduled pickup date and time
+ *     responses:
+ *       200:
+ *         description: Shipment pickup date and time updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:    
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                 message:
+ *                   type: string   
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error updating pickup date and time
+ */
+router.patch('/:id/pickup-date-time', shipmentController.updateShipmentPickupDateTimeById);
 module.exports = router;

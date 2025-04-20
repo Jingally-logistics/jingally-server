@@ -21,27 +21,39 @@ const Shipment = sequelize.define('Shipment', {
   },
   packageType: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
+  },
+  serviceType: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  packageDescription: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  fragile: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true
   },
   weight: {
     type: DataTypes.FLOAT,
-    allowNull: false
+    allowNull: true
   },
   dimensions: {
     type: DataTypes.JSON,
-    allowNull: false
+    allowNull: true
   },
   pickupAddress: {
     type: DataTypes.JSON,
-    allowNull: false
+    allowNull: true
   },
   deliveryAddress: {
     type: DataTypes.JSON,
-    allowNull: false
+    allowNull: true
   },
   scheduledPickupTime: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: true
   },
   estimatedDeliveryTime: {
     type: DataTypes.DATE,
@@ -51,9 +63,21 @@ const Shipment = sequelize.define('Shipment', {
     type: DataTypes.STRING,
     unique: true
   },
+  receiverName: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  receiverPhoneNumber: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   price: {
     type: DataTypes.DECIMAL(10, 2),
-    allowNull: false
+    allowNull: true
+  },
+  paymentStatus: {
+    type: DataTypes.ENUM('pending', 'paid', 'failed'),
+    defaultValue: 'pending'
   },
   notes: {
     type: DataTypes.TEXT,
