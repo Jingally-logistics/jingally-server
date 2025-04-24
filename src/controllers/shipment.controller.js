@@ -277,7 +277,7 @@ class ShipmentController {
         });
       }
 
-      await shipment.update({ paymentStatus: req.body.paymentStatus });   
+      await shipment.update({ paymentStatus: req.body.paymentStatus, price: req.body.amount });   
 
       res.json({
         success: true,
