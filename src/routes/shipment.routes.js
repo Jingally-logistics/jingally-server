@@ -387,7 +387,7 @@ router.get('/track/:trackingNumber', shipmentController.trackShipment);
  *       500:
  *         description: Error cancelling shipment
  */
-router.post('/:id/cancel', shipmentController.cancelShipment);
+router.get('/:id/cancel', shipmentController.cancelShipment);
 
 /**
  * @swagger
