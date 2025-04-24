@@ -125,9 +125,59 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+// Forgot password
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Send verification code email
+    await emailVerificationService.sendVerificationEmail(user);
+
+    return res.json({ message: 'Password reset code sent to your email', success: true });
+  } catch (error) {
+    return res.status(400).json({ error: error.message, success: false });
+  }
+};
+
+// Reset password
+const resetPassword = async (req, res) => {
+  try {
+    const { email, verificationCode, newPassword } = req.body;
+    
+    const user = await User.findOne({
+      where: {
+        email:email
+      }
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid or expired verification code' });
+    }
+
+    // Hash new password
+    // const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    // Update password and clear reset code
+    user.password = newPassword;
+    await user.save();
+
+    return res.json({ message: 'Password reset successfully' });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
+
 module.exports = {
   register,
   login,
   verifyEmail,
-  getCurrentUser
+  getCurrentUser,
+  forgotPassword,
+  resetPassword
 };

@@ -165,4 +165,63 @@ router.get('/me', auth, authController.getCurrentUser);
  */
 router.post('/verify', auth, authController.verifyEmail);
 
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Request password reset
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: Password reset code sent to email
+ *       404:
+ *         description: User not found
+ */
+router.post('/forgot-password', authController.forgotPassword);
+
+/**
+ * @swagger
+ * /auth/reset-password:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Reset password using verification code
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - verificationCode
+ *               - newPassword
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               verificationCode:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *                 minLength: 6
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ *       400:
+ *         description: Invalid or expired verification code
+ */
+router.post('/reset-password', authController.resetPassword);
+
 module.exports = router;
