@@ -440,10 +440,7 @@ class ShipmentController {
       const shipment = await Shipment.findOne({
         where: {
           id: req.params.id,
-          userId: req.user.id,
-          status: {
-            [Op.notIn]: ['delivered', 'cancelled']
-          }
+          userId: req.user.id
         }
       });
 
@@ -456,12 +453,12 @@ class ShipmentController {
 
       await shipment.update({ status: 'cancelled' });
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Shipment cancelled successfully'
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: 'Error cancelling shipment',
         error: error.message
