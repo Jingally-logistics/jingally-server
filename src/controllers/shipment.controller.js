@@ -273,6 +273,7 @@ class ShipmentController {
         },
         include: [{
           model: User,
+          as: 'user',
           attributes: ['email', 'firstName', 'lastName']
         }]
       });
