@@ -71,6 +71,10 @@ const Shipment = sequelize.define('Shipment', {
     type: DataTypes.STRING,
     allowNull: true
   },
+  receiverEmail: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
   price: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: true

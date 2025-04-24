@@ -1,6 +1,8 @@
 const Shipment = require('../models/shipment');
 const { ValidationError } = require('sequelize');
 const cloudinary = require('cloudinary').v2;
+const emailVerificationService = require('../services/email-verification.service');
+const { User } = require('../models');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -242,6 +244,7 @@ class ShipmentController {
         pickupAddress: req.body.pickupAddress,
         receiverName: req.body.receiverName,
         receiverPhoneNumber: req.body.receiverPhoneNumber,
+        receiverEmail: req.body.receiverEmail,
       }
 
       await shipment.update(bodyData); 
@@ -267,7 +270,11 @@ class ShipmentController {
         where: {
           id: req.params.id,  
           userId: req.user.id
-        }
+        },
+        include: [{
+          model: User,
+          attributes: ['email', 'firstName', 'lastName']
+        }]
       });
 
       if (!shipment) {
@@ -277,7 +284,31 @@ class ShipmentController {
         });
       }
 
-      await shipment.update({ paymentStatus: req.body.paymentStatus, price: req.body.amount });   
+      await shipment.update({ 
+        paymentStatus: req.body.paymentStatus, 
+        price: req.body.amount 
+      });   
+
+      // Send payment confirmation email to the user
+      await emailVerificationService.sendPaymentConfirmationEmail(
+        req.user, 
+        shipment
+      );
+
+      // If receiver email exists, send payment confirmation to receiver
+      if (shipment.receiverEmail) {
+        const receiverUser = {
+          id: 'receiver',
+          email: shipment.receiverEmail,
+          firstName: shipment.receiverName?.split(' ')[0] || 'Customer',
+          lastName: shipment.receiverName?.split(' ')[1] || ''
+        };
+
+        await emailVerificationService.sendPaymentConfirmationEmail(
+          receiverUser,
+          shipment
+        );
+      }
 
       res.json({
         success: true,
@@ -285,6 +316,7 @@ class ShipmentController {
         message: 'Shipment payment status updated successfully'
       });
     } catch (error) {
+      console.error('Error in updateShipmentPaymentStatusById:', error);
       res.status(500).json({
         success: false,
         message: 'Error updating shipment payment status',
