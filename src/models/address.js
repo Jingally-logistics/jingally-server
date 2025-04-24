@@ -63,9 +63,9 @@ const Address = sequelize.define('Address', {
     }
   },
   type: {
-    type: DataTypes.ENUM('residential', 'commercial'),
+    type: DataTypes.ENUM('pickup', 'delivery'),
     allowNull: false,
-    defaultValue: 'residential'
+    defaultValue: 'pickup'
   },
   isVerified: {
     type: DataTypes.BOOLEAN,

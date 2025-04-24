@@ -45,6 +45,8 @@ router.use(authMiddleware);
  *                 type: string
  *               isDefault:
  *                 type: boolean
+ *               type:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Address created successfully
