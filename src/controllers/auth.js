@@ -172,6 +172,26 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// Verify email
+const verifyResetEmail = async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    //await emailVerificationService.verifyEmail(user.id, req.body.verificationCode);
+
+    user.isVerified = true;
+    await user.save();
+
+    return res.json({ message: 'Email verified successfully' });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
+
 
 module.exports = {
   register,
@@ -179,5 +199,6 @@ module.exports = {
   verifyEmail,
   getCurrentUser,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  verifyResetEmail
 };
