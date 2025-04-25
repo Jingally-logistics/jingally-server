@@ -312,7 +312,7 @@ class ShipmentController {
       }
 
       await emailVerificationService.sendAdminBookingNotification(
-        'admin@jingally.com',  // admin email
+        'msheliapromise@gmail.com',  // admin email
         req.user,                  // user object
         shipment              // shipment object
       );
