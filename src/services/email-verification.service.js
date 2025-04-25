@@ -119,59 +119,31 @@ class EmailVerificationService {
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h1 style="color: #333; text-align: center;">Shipment Booking Confirmation</h1>
           
+          <p>Dear ${user.fullName},</p>
+          <p>Thank you for choosing Jingally Logistic! We're excited to confirm that your booking has been successfully processed.</p>
+
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h2 style="color: #444; margin-bottom: 15px;">Payment Details</h2>
+            <p><strong>Amount:</strong> $${shipment.price || 'N/A'}</p>
+            <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
+            <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+          </div>
+
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Booking Details</h2>
-            <p><strong>Tracking Number:</strong> ${shipment.trackingNumber}</p>
-            <p><strong>Status:</strong> ${shipment.status}</p>
-            <p><strong>Service Type:</strong> ${shipment.serviceType}</p>
-            <p><strong>Package Type:</strong> ${shipment.packageType}</p>
-            ${shipment.packageDescription ? `<p><strong>Description:</strong> ${shipment.packageDescription}</p>` : ''}
-            ${shipment.fragile ? '<p><strong>⚠️ Fragile Package</strong></p>' : ''}
+            <p><strong>Booking ID:</strong> ${shipment.trackingNumber}</p>
+            <p><strong>Pickup Location:</strong> ${shipment.pickupAddress.street}, ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}, ${shipment.pickupAddress.country}</p>
+            <p><strong>Delivery Location:</strong> ${shipment.deliveryAddress.street}, ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}, ${shipment.deliveryAddress.country}</p>
+            <p><strong>Scheduled Date & Time:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
           </div>
 
-          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h2 style="color: #444; margin-bottom: 15px;">Package Details</h2>
-            ${shipment.weight ? `<p><strong>Weight:</strong> ${shipment.weight} kg</p>` : ''}
-            ${shipment.dimensions ? `
-              <p><strong>Dimensions:</strong></p>
-              <ul>
-                <li>Length: ${shipment.dimensions.length} cm</li>
-                <li>Width: ${shipment.dimensions.width} cm</li>
-                <li>Height: ${shipment.dimensions.height} cm</li>
-              </ul>
-            ` : ''}
-          </div>
+          <p>Our team is committed to ensuring a seamless and reliable delivery experience for you. Should you have any questions or require assistance, please don't hesitate to contact us at info@jingally.com or reply to this email.</p>
 
-          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h2 style="color: #444; margin-bottom: 15px;">Address Details</h2>
-            <div style="margin-bottom: 15px;">
-              <h3 style="color: #555; margin-bottom: 5px;">Pickup Address</h3>
-              <p>${shipment.pickupAddress.street}<br>
-              ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}<br>
-              ${shipment.pickupAddress.country}, ${shipment.pickupAddress.postalCode}</p>
-            </div>
-            <div>
-              <h3 style="color: #555; margin-bottom: 5px;">Delivery Address</h3>
-              <p>${shipment.deliveryAddress.street}<br>
-              ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}<br>
-              ${shipment.deliveryAddress.country}, ${shipment.deliveryAddress.postalCode}</p>
-              <p><strong>Receiver:</strong> ${shipment.receiverName}</p>
-              <p><strong>Contact:</strong> ${shipment.receiverPhoneNumber}</p>
-            </div>
-          </div>
+          <p>Stay connected with us via our app for live updates on your booking status.</p>
 
-          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h2 style="color: #444; margin-bottom: 15px;">Schedule & Payment</h2>
-            ${shipment.scheduledPickupTime ? `<p><strong>Scheduled Pickup:</strong> ${new Date(shipment.scheduledPickupTime).toLocaleString()}</p>` : ''}
-            ${shipment.estimatedDeliveryTime ? `<p><strong>Estimated Delivery:</strong> ${new Date(shipment.estimatedDeliveryTime).toLocaleString()}</p>` : ''}
-            ${shipment.price ? `<p><strong>Price:</strong> $${shipment.price}</p>` : ''}
-            <p><strong>Payment Status:</strong> ${shipment.paymentStatus}</p>
-          </div>
+          <p>Once again, thank you for trusting Jingally Logistic with your logistics needs.</p>
 
-          <div style="text-align: center; margin-top: 30px;">
-            <p style="color: #666;">Thank you for choosing our service!</p>
-            <p style="color: #666;">You can track your shipment using the tracking number: <strong>${shipment.trackingNumber}</strong></p>
-          </div>
+          <p>Best regards,<br>Jingally Logistic Support Team</p>
         </div>
       `
     };
@@ -187,44 +159,39 @@ class EmailVerificationService {
 
   // Send payment confirmation email
   async sendPaymentConfirmationEmail(user, shipment) {
-    const isReceiver = user.id === 'receiver';
     const mailOptions = {
       from: process.env.SMTP_FROM,
       to: user.email,
-      subject: isReceiver ? 'Payment Received for Your Shipment' : 'Payment Confirmation for Your Shipment',
+      subject: 'Booking Confirmation',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #333; text-align: center;">${isReceiver ? 'Payment Received' : 'Payment Confirmation'}</h1>
+          <h1 style="color: #333; text-align: center;">Payment Confirmation</h1>
           
+          <p>Dear ${user.fullName},</p>
+          <p>Thank you for choosing Jingally Logistic! We're excited to confirm that your payment has been successfully processed.</p>
+
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Payment Details</h2>
-            <p><strong>Amount:</strong> $${shipment.price}</p>
-            <p><strong>Status:</strong> ${shipment.paymentStatus}</p>
+            <p><strong>Amount:</strong> $${shipment.price || 'N/A'}</p>
+            <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
           </div>
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h2 style="color: #444; margin-bottom: 15px;">Shipment Details</h2>
-            <p><strong>Tracking Number:</strong> ${shipment.trackingNumber}</p>
-            <p><strong>Status:</strong> ${shipment.status}</p>
-            ${shipment.scheduledPickupTime ? `<p><strong>Scheduled Pickup:</strong> ${new Date(shipment.scheduledPickupTime).toLocaleString()}</p>` : ''}
-            ${shipment.estimatedDeliveryTime ? `<p><strong>Estimated Delivery:</strong> ${new Date(shipment.estimatedDeliveryTime).toLocaleString()}</p>` : ''}
+            <h2 style="color: #444; margin-bottom: 15px;">Booking Details</h2>
+            <p><strong>Booking ID:</strong> ${shipment.trackingNumber}</p>
+            <p><strong>Pickup Location:</strong> ${shipment.pickupAddress.street}, ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}, ${shipment.pickupAddress.country}</p>
+            <p><strong>Delivery Location:</strong> ${shipment.deliveryAddress.street}, ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}, ${shipment.deliveryAddress.country}</p>
+            <p><strong>Scheduled Date & Time:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
           </div>
 
-          ${isReceiver ? `
-            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
-              <h2 style="color: #444; margin-bottom: 15px;">Delivery Information</h2>
-              <p><strong>Delivery Address:</strong></p>
-              <p>${shipment.deliveryAddress.street}<br>
-              ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}<br>
-              ${shipment.deliveryAddress.country}, ${shipment.deliveryAddress.postalCode}</p>
-            </div>
-          ` : ''}
+          <p>Our team is committed to ensuring a seamless and reliable delivery experience for you. Should you have any questions or require assistance, please don't hesitate to contact us at info@jingally.com or reply to this email.</p>
 
-          <div style="text-align: center; margin-top: 30px;">
-            <p style="color: #666;">Thank you for your payment!</p>
-            <p style="color: #666;">You can track your shipment using the tracking number: <strong>${shipment.trackingNumber}</strong></p>
-          </div>
+          <p>Stay connected with us via our app for live updates on your booking status.</p>
+
+          <p>Once again, thank you for trusting Jingally Logistic with your logistics needs.</p>
+
+          <p>Best regards,<br>Jingally Logistic Support Team</p>
         </div>
       `
     };
@@ -234,6 +201,54 @@ class EmailVerificationService {
       return true;
     } catch (error) {
       console.error('Error sending payment confirmation email:', error);
+      return false;
+    }
+  }
+
+  // Send admin notification for new booking
+  async sendAdminBookingNotification(adminEmail, user, shipment) {
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: adminEmail,
+      subject: 'User Booking Notification',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #333; text-align: center;">User Booking Notification</h1>
+          
+          <p>Dear Admin,</p>
+          <p>I hope this email finds you well. I'm writing to inform you that a new booking has been successfully processed through Jingally Logistics.</p>
+
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h2 style="color: #444; margin-bottom: 15px;">Payment Information</h2>
+            <p><strong>Amount:</strong> $${shipment.price || 'N/A'}</p>
+            <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
+            <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
+          </div>
+
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h2 style="color: #444; margin-bottom: 15px;">Booking Details</h2>
+            <p><strong>User Name:</strong> ${user.fullName}</p>
+            <p><strong>Booking ID:</strong> ${shipment.trackingNumber}</p>
+            <p><strong>Item Booked:</strong> ${shipment.packageDescription || 'N/A'}</p>
+            <p><strong>Pickup Location:</strong> ${shipment.pickupAddress.street}, ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}, ${shipment.pickupAddress.country}</p>
+            <p><strong>Delivery Location:</strong> ${shipment.deliveryAddress.street}, ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}, ${shipment.deliveryAddress.country}</p>
+            <p><strong>Scheduled Date & Time:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
+          </div>
+
+          <p>Kindly review the booking details and ensure that all arrangements are in place for a smooth execution of the delivery. Should there be any issues or additional requirements, please feel free to reach out.</p>
+
+          <p>Thank you for your support and dedication to maintaining excellent service standards.</p>
+
+          <p>Best regards,<br>Jingally Logistic Support Team</p>
+        </div>
+      `
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error('Error sending admin booking notification:', error);
       return false;
     }
   }

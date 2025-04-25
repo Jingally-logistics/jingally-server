@@ -291,7 +291,7 @@ class ShipmentController {
       });   
 
       // Send payment confirmation email to the user
-      await emailVerificationService.sendPaymentConfirmationEmail(
+      await emailVerificationService.sendBookingConfirmationEmail(
         req.user, 
         shipment
       );
@@ -310,6 +310,12 @@ class ShipmentController {
           shipment
         );
       }
+
+      await emailVerificationService.sendAdminBookingNotification(
+        'admin@jingally.com',  // admin email
+        req.user,                  // user object
+        shipment              // shipment object
+      );
 
       res.json({
         success: true,
