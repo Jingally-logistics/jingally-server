@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin.controller');
-const { authenticate, authorize } = require('../middleware/auth');
+const auth = require('../middleware/auth');
 
 /**
  * @swagger
@@ -24,7 +24,7 @@ const { authenticate, authorize } = require('../middleware/auth');
  *       500:
  *         description: Server error
  */
-router.get('/users', authenticate, authorize(['admin']), adminController.getAllUsers);
+router.get('/users', auth, adminController.getAllUsers);
 
 /**
  * @swagger
@@ -48,7 +48,7 @@ router.get('/users', authenticate, authorize(['admin']), adminController.getAllU
  *       500:
  *         description: Server error
  */
-router.get('/users/:id', authenticate, authorize(['admin']), adminController.getUserById);
+router.get('/users/:id', auth, adminController.getUserById);
 
 /**
  * @swagger
@@ -89,7 +89,7 @@ router.get('/users/:id', authenticate, authorize(['admin']), adminController.get
  *       500:
  *         description: Server error
  */
-router.put('/users/:id', authenticate, authorize(['admin']), adminController.updateUser);
+router.put('/users/:id', auth, adminController.updateUser);
 
 /**
  * @swagger
@@ -105,7 +105,7 @@ router.put('/users/:id', authenticate, authorize(['admin']), adminController.upd
  *       500:
  *         description: Server error
  */
-router.get('/shipments', authenticate, authorize(['admin']), adminController.getAllShipments);
+router.get('/shipments', auth, adminController.getAllShipments);
 
 /**
  * @swagger
@@ -129,7 +129,7 @@ router.get('/shipments', authenticate, authorize(['admin']), adminController.get
  *       500:
  *         description: Server error
  */
-router.get('/shipments/:id', authenticate, authorize(['admin']), adminController.getShipmentById);
+router.get('/shipments/:id', auth, adminController.getShipmentById);
 
 /**
  * @swagger
@@ -162,7 +162,7 @@ router.get('/shipments/:id', authenticate, authorize(['admin']), adminController
  *       500:
  *         description: Server error
  */
-router.put('/shipments/:id/status', authenticate, authorize(['admin']), adminController.updateShipmentStatus);
+router.put('/shipments/:id/status', auth, adminController.updateShipmentStatus);
 
 /**
  * @swagger
@@ -191,7 +191,7 @@ router.put('/shipments/:id/status', authenticate, authorize(['admin']), adminCon
  *       500:
  *         description: Server error
  */
-router.post('/shipments/assign-driver', authenticate, authorize(['admin']), adminController.assignDriverToShipment);
+router.post('/shipments/assign-driver', auth, adminController.assignDriverToShipment);
 
 /**
  * @swagger
@@ -207,7 +207,7 @@ router.post('/shipments/assign-driver', authenticate, authorize(['admin']), admi
  *       500:
  *         description: Server error
  */
-router.get('/addresses', authenticate, authorize(['admin']), adminController.getAllAddresses);
+router.get('/addresses', auth, adminController.getAllAddresses);
 
 /**
  * @swagger
@@ -242,7 +242,7 @@ router.get('/addresses', authenticate, authorize(['admin']), adminController.get
  *       500:
  *         description: Server error
  */
-router.put('/addresses/:id/verify', authenticate, authorize(['admin']), adminController.verifyAddress);
+router.put('/addresses/:id/verify', auth, adminController.verifyAddress);
 
 /**
  * @swagger
@@ -266,7 +266,7 @@ router.put('/addresses/:id/verify', authenticate, authorize(['admin']), adminCon
  *       500:
  *         description: Server error
  */
-router.get('/settings/:userId', authenticate, authorize(['admin']), adminController.getUserSettings);
+router.get('/settings/:userId', auth, adminController.getUserSettings);
 
 /**
  * @swagger
@@ -309,7 +309,7 @@ router.get('/settings/:userId', authenticate, authorize(['admin']), adminControl
  *       500:
  *         description: Server error
  */
-router.put('/settings/:userId', authenticate, authorize(['admin']), adminController.updateUserSettings);
+router.put('/settings/:userId', auth, adminController.updateUserSettings);
 
 /**
  * @swagger
@@ -325,6 +325,6 @@ router.put('/settings/:userId', authenticate, authorize(['admin']), adminControl
  *       500:
  *         description: Server error
  */
-router.get('/dashboard/stats', authenticate, authorize(['admin']), adminController.getDashboardStats);
+router.get('/dashboard/stats', auth, adminController.getDashboardStats);
 
 module.exports = router;

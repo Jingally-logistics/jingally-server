@@ -4,6 +4,9 @@ const emailVerificationService = require('../services/email-verification.service
 class AdminController {
   // Get all users
   async getAllUsers(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const users = await User.findAll({
         attributes: { exclude: ['password'] },
@@ -22,6 +25,9 @@ class AdminController {
 
   // Get user by ID
   async getUserById(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const user = await User.findByPk(req.params.id, {
         attributes: { exclude: ['password'] },
@@ -47,6 +53,9 @@ class AdminController {
 
   // Update user
   async updateUser(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const user = await User.findByPk(req.params.id);
       if (!user) {
@@ -63,6 +72,9 @@ class AdminController {
 
   // Get all shipments
   async getAllShipments(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const shipments = await Shipment.findAll({
         include: [
@@ -80,6 +92,9 @@ class AdminController {
 
   // Get shipment by ID
   async getShipmentById(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const shipment = await Shipment.findByPk(req.params.id, {
         include: [
@@ -100,6 +115,9 @@ class AdminController {
 
   // Update shipment status
   async updateShipmentStatus(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const shipment = await Shipment.findByPk(req.params.id);
       if (!shipment) {
@@ -123,6 +141,9 @@ class AdminController {
 
     // assign driver to shipment
     async assignDriverToShipment(req, res) {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
         try {
             const { shipmentId, driverId } = req.body;
             const shipment = await Shipment.findByPk(shipmentId);
@@ -139,6 +160,9 @@ class AdminController {
 
   // Get all addresses
   async getAllAddresses(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const addresses = await Address.findAll({
         include: [
@@ -156,6 +180,9 @@ class AdminController {
 
   // Verify address
   async verifyAddress(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const address = await Address.findByPk(req.params.id);
       if (!address) {
@@ -172,6 +199,9 @@ class AdminController {
 
   // Get user settings
   async getUserSettings(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const settings = await Settings.findOne({
         where: { userId: req.params.userId }
@@ -187,6 +217,9 @@ class AdminController {
 
   // Update user settings
   async updateUserSettings(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const settings = await Settings.findOne({
         where: { userId: req.params.userId }
@@ -221,6 +254,9 @@ class AdminController {
 
   // Get dashboard statistics
   async getDashboardStats(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
     try {
       const [
         totalUsers,
