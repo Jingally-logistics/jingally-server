@@ -1,0 +1,330 @@
+const express = require('express');
+const router = express.Router();
+const adminController = require('../controllers/admin.controller');
+const { authenticate, authorize } = require('../middleware/auth');
+
+/**
+ * @swagger
+ * tags:
+ *   name: Admin
+ *   description: Admin management endpoints
+ */
+
+/**
+ * @swagger
+ * /api/admin/users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all users
+ *       500:
+ *         description: Server error
+ */
+router.get('/users', authenticate, authorize(['admin']), adminController.getAllUsers);
+
+/**
+ * @swagger
+ * /api/admin/users/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User details
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/users/:id', authenticate, authorize(['admin']), adminController.getUserById);
+
+/**
+ * @swagger
+ * /api/admin/users/{id}:
+ *   put:
+ *     summary: Update user
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated user
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/users/:id', authenticate, authorize(['admin']), adminController.updateUser);
+
+/**
+ * @swagger
+ * /api/admin/shipments:
+ *   get:
+ *     summary: Get all shipments
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all shipments
+ *       500:
+ *         description: Server error
+ */
+router.get('/shipments', authenticate, authorize(['admin']), adminController.getAllShipments);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}:
+ *   get:
+ *     summary: Get shipment by ID
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shipment details
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/shipments/:id', authenticate, authorize(['admin']), adminController.getShipmentById);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/status:
+ *   put:
+ *     summary: Update shipment status
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated shipment
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/status', authenticate, authorize(['admin']), adminController.updateShipmentStatus);
+
+/**
+ * @swagger
+ * /api/admin/shipments/assign-driver:
+ *   post:
+ *     summary: Assign driver to shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               driverId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Driver assigned successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/shipments/assign-driver', authenticate, authorize(['admin']), adminController.assignDriverToShipment);
+
+/**
+ * @swagger
+ * /api/admin/addresses:
+ *   get:
+ *     summary: Get all addresses
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all addresses
+ *       500:
+ *         description: Server error
+ */
+router.get('/addresses', authenticate, authorize(['admin']), adminController.getAllAddresses);
+
+/**
+ * @swagger
+ * /api/admin/addresses/{id}/verify:
+ *   put:
+ *     summary: Verify address
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               isVerified:
+ *                 type: boolean
+ *               verificationDetails:
+ *                 type: object
+ *     responses:
+ *       200:
+ *         description: Address verified
+ *       404:
+ *         description: Address not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/addresses/:id/verify', authenticate, authorize(['admin']), adminController.verifyAddress);
+
+/**
+ * @swagger
+ * /api/admin/settings/{userId}:
+ *   get:
+ *     summary: Get user settings
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User settings
+ *       404:
+ *         description: Settings not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/settings/:userId', authenticate, authorize(['admin']), adminController.getUserSettings);
+
+/**
+ * @swagger
+ * /api/admin/settings/{userId}:
+ *   put:
+ *     summary: Update user settings
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               notificationPreferences:
+ *                 type: object
+ *               defaultCurrency:
+ *                 type: string
+ *               language:
+ *                 type: string
+ *               theme:
+ *                 type: string
+ *               measurementSystem:
+ *                 type: string
+ *               timeZone:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Updated settings
+ *       404:
+ *         description: Settings not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/settings/:userId', authenticate, authorize(['admin']), adminController.updateUserSettings);
+
+/**
+ * @swagger
+ * /api/admin/dashboard/stats:
+ *   get:
+ *     summary: Get dashboard statistics
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dashboard statistics
+ *       500:
+ *         description: Server error
+ */
+router.get('/dashboard/stats', authenticate, authorize(['admin']), adminController.getDashboardStats);
+
+module.exports = router;

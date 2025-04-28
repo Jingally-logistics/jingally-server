@@ -87,6 +87,14 @@ const Shipment = sequelize.define('Shipment', {
     type: DataTypes.TEXT,
     allowNull: true
   },
+  driverId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: 'Users',
+      key: 'id'
+    }
+  },
   images: {
     type: DataTypes.JSON,
     allowNull: true,
