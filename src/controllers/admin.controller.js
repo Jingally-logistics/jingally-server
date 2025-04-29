@@ -71,12 +71,12 @@ class AdminController {
           {
             model: User,
             as: 'user',
-            attributes: ['firstName', 'lastName', 'email']
+            attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
           },
           {
             model: User,
             as: 'driver',
-            attributes: ['firstName', 'lastName', 'email']
+            attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
           }
         ],
         order: [['createdAt', 'DESC']]
@@ -84,7 +84,7 @@ class AdminController {
       res.json(shipments);
     } catch (error) {
       console.error('Error fetching shipments:', error);
-      res.status(500).json({ error: 'Error fetching shipments' });
+      res.status(500).json({ error: 'Error fetching shipments', details: error.message });
     }
   }
 

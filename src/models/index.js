@@ -15,6 +15,17 @@ Shipment.belongsTo(User, {
   as: 'user'
 });
 
+// Add driver association
+User.hasMany(Shipment, {
+  foreignKey: 'driverId',
+  as: 'assignedShipments'
+});
+
+Shipment.belongsTo(User, {
+  foreignKey: 'driverId',
+  as: 'driver'
+});
+
 User.hasOne(Settings, {
   foreignKey: 'userId',
   as: 'settings'
@@ -38,6 +49,14 @@ Address.belongsTo(User, {
 Settings.belongsTo(Address, {
   foreignKey: 'defaultPickupAddress',
   as: 'pickupAddress'
+});
+
+// Call associate methods if they exist
+const models = { User, Shipment, Settings, Address };
+Object.values(models).forEach(model => {
+  if (model.associate) {
+    model.associate(models);
+  }
 });
 
 // Sync all models with database
