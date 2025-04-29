@@ -9,13 +9,7 @@ class AdminController {
     }
     try {
       const users = await User.findAll({
-        attributes: { exclude: ['password'] },
-        include: [
-          {
-            model: Settings,
-            attributes: ['notificationPreferences', 'defaultCurrency', 'language']
-          }
-        ]
+        attributes: { exclude: ['password'] }
       });
       res.json(users);
     } catch (error) {
@@ -32,10 +26,6 @@ class AdminController {
       const user = await User.findByPk(req.params.id, {
         attributes: { exclude: ['password'] },
         include: [
-          {
-            model: Settings,
-            attributes: ['notificationPreferences', 'defaultCurrency', 'language']
-          },
           {
             model: Address,
             attributes: ['street', 'city', 'state', 'country', 'type']
