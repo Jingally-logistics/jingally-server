@@ -70,12 +70,20 @@ class AdminController {
         include: [
           {
             model: User,
+            as: 'user',
+            attributes: ['firstName', 'lastName', 'email']
+          },
+          {
+            model: User,
+            as: 'driver',
             attributes: ['firstName', 'lastName', 'email']
           }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
       });
       res.json(shipments);
     } catch (error) {
+      console.error('Error fetching shipments:', error);
       res.status(500).json({ error: 'Error fetching shipments' });
     }
   }

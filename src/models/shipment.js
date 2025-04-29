@@ -111,4 +111,17 @@ const Shipment = sequelize.define('Shipment', {
   }
 });
 
+// Define associations
+Shipment.associate = (models) => {
+  Shipment.belongsTo(models.User, {
+    foreignKey: 'userId',
+    as: 'user'
+  });
+  
+  Shipment.belongsTo(models.User, {
+    foreignKey: 'driverId',
+    as: 'driver'
+  });
+};
+
 module.exports = Shipment;
