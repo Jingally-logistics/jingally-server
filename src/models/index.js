@@ -15,6 +15,7 @@ Shipment.belongsTo(User, {
   as: 'user'
 });
 
+
 // Add driver association
 User.hasMany(Shipment, {
   foreignKey: 'driverId',

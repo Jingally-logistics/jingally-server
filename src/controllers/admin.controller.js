@@ -75,7 +75,7 @@ class AdminController {
           },
           {
             model: User,
-            as: 'driver',
+            as: 'assignedShipments',
             attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
           }
         ],
