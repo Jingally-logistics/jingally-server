@@ -11,10 +11,10 @@ User.hasMany(Shipment, {
   as: 'shipments'
 });
 
-Shipment.belongsTo(User, {
-  foreignKey: 'userId',
-  as: 'user'
-});
+// Shipment.belongsTo(User, {
+//   foreignKey: 'userId',
+//   as: 'user'
+// });
 
 
 // Add driver association
@@ -23,10 +23,10 @@ Driver.hasMany(Shipment, {
   as: 'driver'
 });
 
-Shipment.belongsTo(Driver, {
-  foreignKey: 'driverId',
-  as: 'driver'
-});
+// Shipment.belongsTo(Driver, {
+//   foreignKey: 'driverId',
+//   as: 'driver'
+// });
 
 User.hasOne(Settings, {
   foreignKey: 'userId',

@@ -41,7 +41,7 @@ const Driver = sequelize.define('Driver', {
     defaultValue: false
   },
   role: {
-    type: DataTypes.ENUM('user', 'driver', 'admin'),
+    type: DataTypes.ENUM('driver', 'admin'),
     defaultValue: 'driver'
   }
 }, {
