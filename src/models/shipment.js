@@ -91,7 +91,7 @@ const Shipment = sequelize.define('Shipment', {
     type: DataTypes.UUID,
     allowNull: true,
     references: {
-      model: 'Users',
+      model: 'Drivers',
       key: 'id'
     }
   },
