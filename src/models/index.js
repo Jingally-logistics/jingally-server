@@ -3,6 +3,7 @@ const User = require('./user');
 const Shipment = require('./shipment');
 const Settings = require('./settings');
 const Address = require('./address');
+const Driver = require('./driver');
 
 // Define associations
 User.hasMany(Shipment, {
@@ -17,12 +18,12 @@ Shipment.belongsTo(User, {
 
 
 // Add driver association
-User.hasMany(Shipment, {
+Driver.hasMany(Shipment, {
   foreignKey: 'driverId',
-  as: 'assignedShipments'
+  as: 'driver'
 });
 
-Shipment.belongsTo(User, {
+Shipment.belongsTo(Driver, {
   foreignKey: 'driverId',
   as: 'driver'
 });
@@ -53,7 +54,7 @@ Settings.belongsTo(Address, {
 });
 
 // Call associate methods if they exist
-const models = { User, Shipment, Settings, Address };
+const models = { User, Shipment, Settings, Address, Driver };
 Object.values(models).forEach(model => {
   if (model.associate) {
     model.associate(models);
@@ -81,5 +82,6 @@ module.exports = {
   Shipment,
   Settings,
   Address,
+  Driver,
   syncDatabase
 };

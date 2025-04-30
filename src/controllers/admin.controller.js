@@ -1,4 +1,4 @@
-const { User, Shipment, Address, Settings } = require('../models');
+const { User, Shipment, Address, Settings, Driver } = require('../models');
 const emailVerificationService = require('../services/email-verification.service');
 
 class AdminController {
@@ -74,8 +74,8 @@ class AdminController {
             attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
           },
           {
-            model: User,
-            as: 'assignedShipments',
+            model: Driver,
+            as: 'driver',
             attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
           }
         ],

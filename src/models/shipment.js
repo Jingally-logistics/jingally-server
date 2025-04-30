@@ -118,7 +118,7 @@ Shipment.associate = (models) => {
     as: 'user'
   });
   
-  Shipment.belongsTo(models.User, {
+  Shipment.belongsTo(models.Driver, {
     foreignKey: 'driverId',
     as: 'driver'
   });
