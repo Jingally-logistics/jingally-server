@@ -17,6 +17,20 @@ class AdminController {
     }
   }
 
+  // Get all drivers
+  async getAllDrivers(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try { 
+      const drivers = await Driver.findAll({
+        attributes: { exclude: ['password'] }
+      });
+      res.json(drivers);
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching drivers' });
+    }
+  }
   // Get user by ID
   async getUserById(req, res) {
     if (req.user.role !== 'admin') {

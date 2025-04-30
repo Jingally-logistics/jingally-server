@@ -26,6 +26,22 @@ const auth = require('../middleware/auth');
  */
 router.get('/users', auth, adminController.getAllUsers);
 
+/** 
+ * @swagger
+ * /api/admin/drivers:
+ *   get:
+ *     summary: Get all drivers
+ *     tags: [Admin]    
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all drivers
+ *       500:
+ *         description: Server error
+ */
+router.get('/drivers', auth, adminController.getAllDrivers);
+
 /**
  * @swagger
  * /api/admin/users/{id}:
