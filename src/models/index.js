@@ -69,6 +69,7 @@ const syncDatabase = async () => {
     await Address.sync({ alter: process.env.NODE_ENV === 'development' });
     await Settings.sync({ alter: process.env.NODE_ENV === 'development' });
     await Shipment.sync({ alter: process.env.NODE_ENV === 'development' });
+    await Driver.sync({ alter: process.env.NODE_ENV === 'development' });
     console.log('Database synced successfully');
   } catch (error) {
     console.error('Error syncing database:', error);
