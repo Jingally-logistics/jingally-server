@@ -119,7 +119,7 @@ class EmailVerificationService {
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h1 style="color: #333; text-align: center;">Shipment Booking Confirmation</h1>
           
-          <p>Dear ${user.fullName},</p>
+          <p>Dear ${user.firstName},</p>
           <p>Thank you for choosing Jingally Logistic! We're excited to confirm that your booking has been successfully processed.</p>
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
@@ -167,7 +167,7 @@ class EmailVerificationService {
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h1 style="color: #333; text-align: center;">Payment Confirmation</h1>
           
-          <p>Dear ${user.fullName},</p>
+          <p>Dear ${user.firstName},</p>
           <p>Thank you for choosing Jingally Logistic! We're excited to confirm that your payment has been successfully processed.</p>
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
@@ -227,7 +227,8 @@ class EmailVerificationService {
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Booking Details</h2>
-            <p><strong>User Name:</strong> ${user.fullName}</p>
+            <p><strong>User Name:</strong> ${user.firstName} ${user.lastName} </p>
+            <p><strong>User Email:</strong> ${user.email} </p>
             <p><strong>Booking ID:</strong> ${shipment.trackingNumber}</p>
             <p><strong>Item Booked:</strong> ${shipment.packageDescription || 'N/A'}</p>
             <p><strong>Pickup Location:</strong> ${shipment.pickupAddress.street}, ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}, ${shipment.pickupAddress.country}</p>
