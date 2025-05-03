@@ -15,15 +15,17 @@ cloudinary.config({
 class ShipmentController {
   // Create a new shipment
   async createShipment(req, res) {
+    const { serviceType, packageType, packageDescription, fragile } = req.body;
+    console.log(req.body);
     try {
       console.log(req.body);
 
       const shipment = await Shipment.create({
-          serviceType: req.body.serviceType,
-          packageType: req.body.packageType,
-          packageDescription: req.body.packageDescription,
+          serviceType,
+          packageType,
+          packageDescription,
           userId: req.user.id,
-          fragile: req.body.fragile,
+          fragile,
       });
 
       res.status(201).json({
