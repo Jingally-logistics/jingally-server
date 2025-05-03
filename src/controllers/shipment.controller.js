@@ -17,7 +17,9 @@ class ShipmentController {
   async createShipment(req, res) {
     try {
       const shipmentData = {
-        ...req.body,
+        serviceType: req.body.serviceType,
+        packageType: req.body.packageType,
+        packageDescription: req.body.packageDescription,
         userId: req.user.id
       };
 
