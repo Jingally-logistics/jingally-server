@@ -22,7 +22,8 @@ class ShipmentController {
           serviceType: req.body.serviceType,
           packageType: req.body.packageType,
           packageDescription: req.body.packageDescription,
-          userId: req.user.id
+          userId: req.user.id,
+          fragile: req.body.fragile,
       });
 
       res.status(201).json({
