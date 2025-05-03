@@ -21,15 +21,15 @@ const Shipment = sequelize.define('Shipment', {
   },
   packageType: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   serviceType: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   packageDescription: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   fragile: {
     type: DataTypes.BOOLEAN,

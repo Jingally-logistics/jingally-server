@@ -16,14 +16,14 @@ class ShipmentController {
   // Create a new shipment
   async createShipment(req, res) {
     try {
-      const shipmentData = {
-        serviceType: req.body.serviceType,
-        packageType: req.body.packageType,
-        packageDescription: req.body.packageDescription,
-        userId: req.user.id
-      };
+      console.log(req.body);
 
-      const shipment = await Shipment.create(shipmentData);
+      const shipment = await Shipment.create({
+          serviceType: req.body.serviceType,
+          packageType: req.body.packageType,
+          packageDescription: req.body.packageDescription,
+          userId: req.user.id
+      });
 
       res.status(201).json({
         success: true,
