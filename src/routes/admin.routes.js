@@ -42,6 +42,46 @@ router.get('/users', auth, adminController.getAllUsers);
  */
 router.get('/drivers', auth, adminController.getAllDrivers);
 
+
+/**
+ * @swagger
+ * /api/admin/drivers:
+ *   post:
+ *     summary: Create a new driver
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - firstName
+ *               - lastName
+ *               - email
+ *               - phone
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Driver created successfully
+ *       400:
+ *         description: Driver with this email already exists
+ *       500:
+ *         description: Server error
+ */
+router.post('/drivers', auth, adminController.createDriver);
+
+
 /**
  * @swagger
  * /api/admin/users/{id}:

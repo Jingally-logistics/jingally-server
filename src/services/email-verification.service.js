@@ -30,7 +30,7 @@ class EmailVerificationService {
   }
 
   // Send verification email with code
-  async sendVerificationEmail(user) {
+  async sendVerificationEmail(user, password) {
     const verificationCode = this.generateVerificationCode();
     this.storeVerificationCode(user.id, verificationCode);
 
@@ -42,6 +42,7 @@ class EmailVerificationService {
         <h1>Welcome to Jingally Logistics!</h1>
         <p>Your verification code is:</p>
         <h2 style="font-size: 32px; letter-spacing: 5px; text-align: center; padding: 10px; background-color: #f5f5f5; border-radius: 5px;">${verificationCode}</h2>
+        ${password ? `<p>Your password is: ${password}</p>` : ''}
         <p>This code will expire in 24 hours.</p>
         <p>If you didn't create an account, please ignore this email.</p>
       `

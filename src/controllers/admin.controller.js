@@ -31,6 +31,52 @@ class AdminController {
       res.status(500).json({ error: 'Error fetching drivers' });
     }
   }
+
+  // create Driver
+  async createDriver(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const { firstName, lastName, email, phone } = req.body;
+      
+      // Check if driver already exists
+      const existingDriver = await Driver.findOne({ where: { email } });
+      if (existingDriver) {
+        return res.status(400).json({ error: 'Driver with this email already exists' });
+      }
+
+      const password = firstName+'20jingally';
+
+      // Create new driver
+      const driver = await Driver.create({
+        firstName,
+        lastName,
+        email,
+        phone,
+        password, // Note: Password should be hashed in the model
+        role: 'driver'
+      });
+
+      // Send verification email
+      await emailVerificationService.sendVerificationEmail(driver.email, password);
+
+      res.status(201).json({
+        message: 'Driver created successfully',
+        driver: {
+          id: driver.id,
+          firstName: driver.firstName,
+          lastName: driver.lastName,
+          email: driver.email,
+          phone: driver.phone,
+          role: driver.role
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Error creating driver' });
+    }
+  }
+
   // Get user by ID
   async getUserById(req, res) {
     if (req.user.role !== 'admin') {
