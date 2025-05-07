@@ -1,4 +1,4 @@
-const { User, Shipment, Address, Settings, Driver } = require('../models');
+const { User, Shipment, Address, Settings, Driver, Container } = require('../models');
 const emailVerificationService = require('../services/email-verification.service');
 
 class AdminController {
@@ -216,6 +216,30 @@ class AdminController {
         }
     }
 
+    // assign container to shipment
+    async assignContainerToShipment(req, res) {
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
+        try {
+            const { shipmentId, containerId } = req.body;
+            const shipment = await Shipment.findByPk(shipmentId);
+            if (!shipment) {
+                return res.status(404).json({ error: 'Shipment not found' });
+            }
+
+            const container = await Container.findByPk(containerId);
+            if (!container) {
+                return res.status(404).json({ error: 'Container not found' });
+            }
+
+            await shipment.update({ containerId });
+            return res.json(shipment);
+        } catch (error) {
+            return res.status(500).json({ error: 'Error assigning container to shipment' });
+        }
+    }
+
   // Get all addresses
   async getAllAddresses(req, res) {
     if (req.user.role !== 'admin') {
@@ -339,6 +363,120 @@ class AdminController {
       });
     } catch (error) {
       res.status(500).json({ error: 'Error fetching dashboard statistics' });
+    }
+  }
+
+  // Get all containers
+  async getAllContainers(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const containers = await Container.findAll();
+      res.json(containers);
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching containers' });
+    }
+  }
+
+  // Create new container
+  async createContainer(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const {
+        containerNumber,
+        type,
+        capacity,
+        location,
+        notes
+      } = req.body;
+
+      // Check if container already exists
+      const existingContainer = await Container.findOne({ 
+        where: { containerNumber } 
+      });
+      if (existingContainer) {
+        return res.status(400).json({ error: 'Container with this number already exists' });
+      }
+
+      const container = await Container.create({
+        containerNumber,
+        type,
+        capacity,
+        location,
+        notes,
+        status: 'available'
+      });
+
+      res.status(201).json({
+        message: 'Container created successfully',
+        container
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Error creating container' });
+    }
+  }
+
+  // Update container
+  async updateContainer(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const { id } = req.params;
+      const {
+        type,
+        status,
+        capacity,
+        location,
+        lastMaintenanceDate,
+        nextMaintenanceDate,
+        notes
+      } = req.body;
+
+      const container = await Container.findByPk(id);
+      if (!container) {
+        return res.status(404).json({ error: 'Container not found' });
+      }
+
+      await container.update({
+        type,
+        status,
+        capacity,
+        location,
+        lastMaintenanceDate,
+        nextMaintenanceDate,
+        notes
+      });
+
+      res.json({
+        message: 'Container updated successfully',
+        container
+      });
+    } catch (error) {
+      res.status(500).json({ error: 'Error updating container' });
+    }
+  }
+
+  // Delete container
+  async deleteContainer(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const { id } = req.params;
+      const container = await Container.findByPk(id);
+      
+      if (!container) {
+        return res.status(404).json({ error: 'Container not found' });
+      }
+
+      await container.destroy();
+      res.json({ message: 'Container deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ error: 'Error deleting container' });
     }
   }
 }

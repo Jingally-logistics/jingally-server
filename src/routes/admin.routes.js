@@ -251,6 +251,36 @@ router.post('/shipments/assign-driver', auth, adminController.assignDriverToShip
 
 /**
  * @swagger
+ * /api/admin/shipments/assign-container:
+ *   post:
+ *     summary: Assign container to shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               containerId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Container assigned successfully
+ *       404:
+ *         description: Shipment or container not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/shipments/assign-container', auth, adminController.assignContainerToShipment);
+
+
+/**
+ * @swagger
  * /api/admin/addresses:
  *   get:
  *     summary: Get all addresses
@@ -382,5 +412,134 @@ router.put('/settings/:userId', auth, adminController.updateUserSettings);
  *         description: Server error
  */
 router.get('/dashboard/stats', auth, adminController.getDashboardStats);
+
+
+/**
+ * @swagger
+ * /api/admin/containers:
+ *   get:
+ *     summary: Get all containers
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all containers
+ *       500:
+ *         description: Server error
+ */
+router.get('/containers', auth, adminController.getAllContainers);
+
+/**
+ * @swagger
+ * /api/admin/containers:
+ *   post:
+ *     summary: Create a new container
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - containerNumber
+ *               - type
+ *               - capacity
+ *               - location
+ *             properties:
+ *               containerNumber:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *               capacity:
+ *                 type: string
+ *               location:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Container created successfully
+ *       400:
+ *         description: Container with this number already exists
+ *       500:
+ *         description: Server error
+ */
+router.post('/containers', auth, adminController.createContainer);
+
+/**
+ * @swagger
+ * /api/admin/containers/{id}:
+ *   put:
+ *     summary: Update container
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *               capacity:
+ *                 type: string
+ *               location:
+ *                 type: string
+ *               lastMaintenanceDate:
+ *                 type: string
+ *                 format: date
+ *               nextMaintenanceDate:
+ *                 type: string
+ *                 format: date
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Container updated successfully
+ *       404:
+ *         description: Container not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/containers/:id', auth, adminController.updateContainer);
+
+/**
+ * @swagger
+ * /api/admin/containers/{id}:
+ *   delete:
+ *     summary: Delete container
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Container deleted successfully
+ *       404:
+ *         description: Container not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/containers/:id', auth, adminController.deleteContainer);
+
 
 module.exports = router;

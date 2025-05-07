@@ -100,6 +100,14 @@ const Shipment = sequelize.define('Shipment', {
       key: 'id'
     }
   },
+  containerID:{
+    type: DataTypes.STRING,
+    allowNull: true,
+    references: {
+      model: 'Containers',
+      key: 'id'
+    }
+  },
   images: {
     type: DataTypes.JSON,
     allowNull: true,

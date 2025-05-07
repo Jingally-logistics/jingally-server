@@ -4,6 +4,7 @@ const Shipment = require('./shipment');
 const Settings = require('./settings');
 const Address = require('./address');
 const Driver = require('./driver');
+const Container = require('./containers');
 
 // Define associations
 User.hasMany(Shipment, {
@@ -70,6 +71,7 @@ const syncDatabase = async () => {
     await Address.sync({ alter: process.env.NODE_ENV === 'development' });
     await Settings.sync({ alter: process.env.NODE_ENV === 'development' });
     await Shipment.sync({ alter: process.env.NODE_ENV === 'development' });
+    await Container.sync({ alter: process.env.NODE_ENV === 'development' });
     console.log('Database synced successfully');
   } catch (error) {
     console.error('Error syncing database:', error);
@@ -84,5 +86,6 @@ module.exports = {
   Settings,
   Address,
   Driver,
+  Container,
   syncDatabase
 };
