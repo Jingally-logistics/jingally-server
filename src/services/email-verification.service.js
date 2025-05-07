@@ -254,6 +254,95 @@ class EmailVerificationService {
       return false;
     }
   }
+
+  // Send shipment status update email
+  async sendShipmentStatusUpdateEmail(user, shipment) {
+    const statusMessages = {
+      'picked_up': 'Your shipment has been picked up and is now in our possession.',
+      'in_transit': 'Your shipment is now in transit and on its way to the destination.',
+      'delivered': 'Your shipment has been successfully delivered!',
+      'cancelled': 'Your shipment has been cancelled.'
+    };
+
+    const statusEmojis = {
+      'picked_up': '📦',
+      'in_transit': '🚚',
+      'delivered': '✅',
+      'cancelled': '❌'
+    };
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: user.email,
+      subject: `Shipment Status Update: ${shipment.status.replace('_', ' ').toUpperCase()}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #333; text-align: center;">
+            ${statusEmojis[shipment.status]} Shipment Status Update
+          </h1>
+          
+          <p>Dear ${user.firstName},</p>
+          
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h2 style="color: #444; margin-bottom: 15px;">Status Update</h2>
+            <p style="font-size: 18px; color: #2c5282;">
+              <strong>${shipment.status.replace('_', ' ').toUpperCase()}</strong>
+            </p>
+            <p>${statusMessages[shipment.status]}</p>
+          </div>
+
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h2 style="color: #444; margin-bottom: 15px;">Shipment Details</h2>
+            <p><strong>Tracking Number:</strong> ${shipment.trackingNumber}</p>
+            <p><strong>Package Type:</strong> ${shipment.packageType || 'N/A'}</p>
+            ${shipment.packageDescription ? `<p><strong>Description:</strong> ${shipment.packageDescription}</p>` : ''}
+            ${shipment.fragile ? '<p><strong>⚠️ Fragile Package</strong></p>' : ''}
+          </div>
+
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <h2 style="color: #444; margin-bottom: 15px;">Location Details</h2>
+            <div style="margin-bottom: 15px;">
+              <h3 style="color: #555; margin-bottom: 5px;">Pickup Address</h3>
+              <p>${shipment.pickupAddress.street}<br>
+              ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}<br>
+              ${shipment.pickupAddress.country}</p>
+            </div>
+            <div>
+              <h3 style="color: #555; margin-bottom: 5px;">Delivery Address</h3>
+              <p>${shipment.deliveryAddress.street}<br>
+              ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}<br>
+              ${shipment.deliveryAddress.country}</p>
+            </div>
+          </div>
+
+          ${shipment.driver ? `
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+              <h2 style="color: #444; margin-bottom: 15px;">Driver Information</h2>
+              <p><strong>Driver Name:</strong> ${shipment.driver.firstName} ${shipment.driver.lastName}</p>
+              <p><strong>Contact:</strong> ${shipment.driver.phone}</p>
+            </div>
+          ` : ''}
+
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #666;">You can track your shipment status anytime using your tracking number: <strong>${shipment.trackingNumber}</strong></p>
+            <p style="color: #666;">For any questions or concerns, please contact our support team.</p>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+            <p style="color: #666;">Best regards,<br>Jingally Logistic Support Team</p>
+          </div>
+        </div>
+      `
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error('Error sending shipment status update email:', error);
+      return false;
+    }
+  }
 }
 
 module.exports = new EmailVerificationService();

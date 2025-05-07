@@ -80,12 +80,17 @@ const Shipment = sequelize.define('Shipment', {
     allowNull: true
   },
   paymentStatus: {
-    type: DataTypes.ENUM('pending', 'paid', 'failed'),
-    defaultValue: 'pending'
+    type: DataTypes.ENUM('pending', 'paid', 'failed','unpaid'),
+    defaultValue: 'unpaid'
   },
   notes: {
     type: DataTypes.TEXT,
     allowNull: true
+  },
+  paymentMethod: {
+    type: DataTypes.ENUM('paypal', 'bank_transfer', 'cash'),
+    allowNull: true,
+    defaultValue: 'paypal'
   },
   driverId: {
     type: DataTypes.UUID,

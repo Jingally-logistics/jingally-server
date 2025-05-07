@@ -2,7 +2,7 @@ const Shipment = require('../models/shipment');
 const { ValidationError } = require('sequelize');
 const cloudinary = require('cloudinary').v2;
 const emailVerificationService = require('../services/email-verification.service');
-const { User } = require('../models');
+const { User, Driver } = require('../models');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -292,7 +292,8 @@ class ShipmentController {
 
       await shipment.update({ 
         paymentStatus: req.body.paymentStatus, 
-        price: req.body.amount 
+        price: req.body.amount,
+        paymentMethod: req.body.method
       });   
 
       // Send payment confirmation email to the user
@@ -345,7 +346,19 @@ class ShipmentController {
         where: {
           id: req.params.id,
           userId: req.user.id
-        }
+        },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'firstName', 'lastName', 'email']
+          },
+          {
+            model: Driver,
+            as: 'driver',
+            attributes: ['id', 'firstName', 'lastName', 'phone']
+          }
+        ]
       });
 
       if (!shipment) {
@@ -355,7 +368,19 @@ class ShipmentController {
         });
       }
 
+      // Store old status for comparison
+      const oldStatus = shipment.status;
       await shipment.update({ status });
+
+      // Only send email if status has changed
+      if (oldStatus !== status) {
+        try {
+          await emailVerificationService.sendShipmentStatusUpdateEmail(shipment.user, shipment);
+        } catch (emailError) {
+          console.error('Error sending status update email:', emailError);
+          // Continue with the response even if email fails
+        }
+      }
 
       res.json({
         success: true,

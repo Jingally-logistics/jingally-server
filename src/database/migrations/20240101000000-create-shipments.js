@@ -18,6 +18,16 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      driverId: {
+        type: Sequelize.UUID,
+        allowNull: true,
+        references: {
+          model: 'Drivers',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
+      },
       status: {
         type: Sequelize.ENUM('pending', 'picked_up', 'in_transit', 'delivered', 'cancelled'),
         defaultValue: 'pending'
