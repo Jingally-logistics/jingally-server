@@ -12,27 +12,30 @@ User.hasMany(Shipment, {
   as: 'shipments'
 });
 
-// Shipment.belongsTo(User, {
-//   foreignKey: 'userId',
-//   as: 'user'
-// });
+Shipment.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
 
 Container.hasMany(Shipment, {
   foreignKey: 'containerID',
   as: 'shipments'
 });
 
+Shipment.belongsTo(Container, {
+  foreignKey: 'containerID',
+  as: 'container'
+});
 
-// Add driver association
 Driver.hasMany(Shipment, {
+  foreignKey: 'driverId',
+  as: 'shipments'
+});
+
+Shipment.belongsTo(Driver, {
   foreignKey: 'driverId',
   as: 'driver'
 });
-
-// Shipment.belongsTo(Driver, {
-//   foreignKey: 'driverId',
-//   as: 'driver'
-// });
 
 User.hasOne(Settings, {
   foreignKey: 'userId',

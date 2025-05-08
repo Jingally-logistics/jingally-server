@@ -2,11 +2,11 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Container = sequelize.define('Container', {
-    id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUIDV4,
-        primaryKey: true
-      },
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
   containerNumber: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -43,13 +43,5 @@ const Container = sequelize.define('Container', {
 }, {
   timestamps: true
 });
-
-// Define associations
-Container.associate = (models) => {
-  Container.hasMany(models.Shipment, {
-    foreignKey: 'containerID',
-    as: 'shipments'
-  });
-};
 
 module.exports = Container;

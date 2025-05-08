@@ -80,7 +80,7 @@ const Shipment = sequelize.define('Shipment', {
     allowNull: true
   },
   paymentStatus: {
-    type: DataTypes.ENUM('pending', 'paid', 'failed','unpaid'),
+    type: DataTypes.ENUM('pending', 'paid', 'failed', 'unpaid'),
     defaultValue: 'unpaid'
   },
   notes: {
@@ -100,8 +100,8 @@ const Shipment = sequelize.define('Shipment', {
       key: 'id'
     }
   },
-  containerID:{
-    type: DataTypes.STRING,
+  containerID: {
+    type: DataTypes.UUID,
     allowNull: true,
     references: {
       model: 'Containers',
@@ -123,23 +123,5 @@ const Shipment = sequelize.define('Shipment', {
     }
   }
 });
-
-// Define associations
-Shipment.associate = (models) => {
-  Shipment.belongsTo(models.User, {
-    foreignKey: 'userId',
-    as: 'user'
-  });
-  
-  Shipment.belongsTo(models.Driver, {
-    foreignKey: 'driverId',
-    as: 'driver'
-  });
-
-  Shipment.belongsTo(models.Container, {
-    foreignKey: 'containerID',
-    as: 'container'
-  });
-};
 
 module.exports = Shipment;
