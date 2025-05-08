@@ -135,6 +135,11 @@ Shipment.associate = (models) => {
     foreignKey: 'driverId',
     as: 'driver'
   });
+
+  Shipment.belongsTo(models.Container, {
+    foreignKey: 'containerID',
+    as: 'container'
+  });
 };
 
 module.exports = Shipment;
