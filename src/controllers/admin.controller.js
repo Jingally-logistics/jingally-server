@@ -206,6 +206,28 @@ class AdminController {
     }
   }
 
+  // update bank transfer payment status
+  async updateBankTransferPaymentStatus(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const { shipmentId, paymentStatus } = req.body;
+      const shipment = await Shipment.findByPk(shipmentId);
+      if (!shipment) {
+        return res.status(404).json({ error: 'Shipment not found' });
+      }
+      if(shipment.paymentMethod !== 'bank_transfer') {
+        return res.status(400).json({ error: 'Shipment payment method is not bank transfer' });
+      }
+      
+      await shipment.update({ paymentStatus });
+      res.json(shipment);
+    } catch (error) {
+      res.status(500).json({ error: 'Error updating bank transfer payment status' });
+    }
+  }
+
     // assign driver to shipment
     async assignDriverToShipment(req, res) {
         if (req.user.role !== 'admin') {
