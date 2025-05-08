@@ -17,6 +17,11 @@ User.hasMany(Shipment, {
 //   as: 'user'
 // });
 
+Container.hasMany(Shipment, {
+  foreignKey: 'containerID',
+  as: 'shipments'
+});
+
 
 // Add driver association
 Driver.hasMany(Shipment, {
