@@ -419,7 +419,8 @@ class AdminController {
         container
       });
     } catch (error) {
-      res.status(500).json({ error: 'Error creating container' });
+      console.error('Error creating container:', error);
+      res.status(500).json({ error: 'Error creating container', details: error.message });
     }
   }
 

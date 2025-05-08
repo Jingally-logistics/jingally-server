@@ -2,11 +2,11 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Container = sequelize.define('Container', {
-  id: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-    allowNull: false
-  },
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
   containerNumber: {
     type: DataTypes.STRING,
     allowNull: false,

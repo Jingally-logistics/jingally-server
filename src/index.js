@@ -24,7 +24,7 @@ app.use('/api/users', require('./routes/user.routes'));
 app.use('/api/addresses', require('./routes/address.routes'));
 app.use('/api/shipments', require('./routes/shipment.routes'));
 app.use('/api/settings', require('./routes/settings.routes'));
-app.use('/api/admin', require('./routes/admin.routes'));
+app.use('/api/api/admin', require('./routes/admin.routes'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
