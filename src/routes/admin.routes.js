@@ -222,6 +222,43 @@ router.put('/shipments/:id/status', auth, adminController.updateShipmentStatus);
 
 /**
  * @swagger
+ * /api/admin/shipments/{id}/payment-status:
+ *   put:
+ *     summary: Update bank transfer payment status
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               paymentStatus:
+ *                 type: string
+ *                 enum: [pending, paid, failed]
+ *     responses:
+ *       200:
+ *         description: Payment status updated successfully
+ *       400:
+ *         description: Invalid payment method
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/payment-status', auth, adminController.updateBankTransferPaymentStatus);
+
+
+/**
+ * @swagger
  * /api/admin/shipments/assign-driver:
  *   post:
  *     summary: Assign driver to shipment
@@ -277,6 +314,9 @@ router.post('/shipments/assign-driver', auth, adminController.assignDriverToShip
  *         description: Server error
  */
 router.post('/shipments/assign-container', auth, adminController.assignContainerToShipment);
+
+
+
 
 
 /**
