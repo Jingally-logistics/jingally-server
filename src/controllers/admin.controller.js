@@ -137,6 +137,11 @@ class AdminController {
             model: Driver,
             as: 'driver',
             attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
+          },
+          {
+            model: Container,
+            as: 'container',
+            attributes: ['containerNumber','type','capacity','location','status']
           }
         ],
         order: [['createdAt', 'DESC']]
@@ -159,6 +164,10 @@ class AdminController {
           {
             model: User,
             attributes: ['firstName', 'lastName', 'email']
+          },
+          {
+            model: Container,
+            attributes: ['containerNumber','type','capacity','location','status']
           }
         ]
       });
@@ -233,7 +242,7 @@ class AdminController {
                 return res.status(404).json({ error: 'Container not found' });
             }
 
-            await shipment.update({ containerId });
+            await shipment.update({ containerID:containerId });
             return res.json(shipment);
         } catch (error) {
             return res.status(500).json({ error: 'Error assigning container to shipment' });
