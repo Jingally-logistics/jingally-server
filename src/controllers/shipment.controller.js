@@ -2,7 +2,7 @@ const Shipment = require('../models/shipment');
 const { ValidationError } = require('sequelize');
 const cloudinary = require('cloudinary').v2;
 const emailVerificationService = require('../services/email-verification.service');
-const { User, Driver } = require('../models');
+const { User, Driver, Container } = require('../models');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -80,8 +80,20 @@ class ShipmentController {
       const shipment = await Shipment.findOne({
         where: {
           id: req.params.id,
-          userId: req.user.id
-        }
+          userId: req.user.id 
+        },
+        include: [
+          {
+            model: Driver,
+            as: 'driver',
+            attributes: ['id', 'firstName', 'lastName', 'phone']
+          },
+          {
+            model: Container,
+            as: 'container',
+            attributes: ['containerNumber','type','capacity','location','status']
+          }
+        ]
       });
 
       if (!shipment) {
@@ -357,6 +369,11 @@ class ShipmentController {
             model: Driver,
             as: 'driver',
             attributes: ['id', 'firstName', 'lastName', 'phone']
+          },,
+          {
+            model: Container,
+            as: 'container',
+            attributes: ['containerNumber','type','capacity','location','status']
           }
         ]
       });
@@ -401,7 +418,24 @@ class ShipmentController {
     try {
       const { trackingNumber } = req.params;
       const shipment = await Shipment.findOne({
-        where: { trackingNumber }
+        where: { trackingNumber },
+        include: [
+          {
+            model: User,
+            as: 'user',
+            attributes: ['id', 'firstName', 'lastName', 'email']
+          },
+          {
+            model: Driver,
+            as: 'driver',
+            attributes: ['id', 'firstName', 'lastName', 'phone']
+          },
+          {
+            model: Container,
+            as: 'container',
+            attributes: ['containerNumber','type','capacity','location','status']
+          }
+        ]
       });
 
       if (!shipment) {
@@ -413,13 +447,7 @@ class ShipmentController {
 
       res.json({
         success: true,
-        data: {
-          trackingNumber: shipment.trackingNumber,
-          status: shipment.status,
-          estimatedDeliveryTime: shipment.estimatedDeliveryTime,
-          pickupAddress: shipment.pickupAddress,
-          deliveryAddress: shipment.deliveryAddress
-        }
+        data: shipment
       });
     } catch (error) {
       res.status(500).json({
