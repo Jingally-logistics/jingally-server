@@ -153,6 +153,21 @@ class AdminController {
     }
   }
 
+  // Get all Admins
+  async getAllAdmins(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const admins = await User.findAll({
+        where: { role: 'admin' }
+      });
+      return res.json(admins);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error fetching admins' });
+    }
+  }
+
   // Get shipment by ID
   async getShipmentById(req, res) {
     if (req.user.role !== 'admin') {

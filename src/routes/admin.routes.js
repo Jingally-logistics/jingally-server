@@ -163,6 +163,24 @@ router.put('/users/:id', auth, adminController.updateUser);
  */
 router.get('/shipments', auth, adminController.getAllShipments);
 
+
+/**
+ * @swagger
+ * /api/admin/admins:
+ *   get:
+ *     summary: Get all admins
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all admins
+ *       500:
+ *         description: Server error
+ */
+router.get('/admins', auth, adminController.getAllAdmins);
+
+
 /**
  * @swagger
  * /api/admin/shipments/{id}:
