@@ -182,6 +182,8 @@ class AdminController {
       }
       const password = firstName+'jingallyAdmin';
       const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password });
+      // Send verification email
+      await emailVerificationService.sendVerificationEmail(admin.email, password);
       return res.status(201).json(admin);
     } catch (error) {
       return res.status(500).json({ error: 'Error creating admin' });
