@@ -180,6 +180,39 @@ router.get('/shipments', auth, adminController.getAllShipments);
  */
 router.get('/admins', auth, adminController.getAllAdmins);
 
+/**
+ * @swagger
+ * /api/admin/admins:
+ *   post:
+ *     summary: Create a new admin
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Admin created successfully  
+ *       400:
+ *         description: Admin with this email already exists
+ *       500:
+ *         description: Server error
+ */
+router.post('/admins', auth, adminController.createAdmin);
+
 
 /**
  * @swagger

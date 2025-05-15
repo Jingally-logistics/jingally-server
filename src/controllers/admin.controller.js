@@ -168,6 +168,26 @@ class AdminController {
     }
   }
 
+  // create Admin
+  async createAdmin(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const { firstName, lastName, email, phone } = req.body;
+      // Check if driver already exists
+      const existingAdmin = await User.findOne({ where: { email } });
+      if (existingAdmin) {
+        return res.status(400).json({ error: 'Admin with this email already exists' });
+      }
+      const password = firstName+'jingallyAdmin';
+      const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password });
+      return res.status(201).json(admin);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error creating admin' });
+    }
+  }
+
   // Get shipment by ID
   async getShipmentById(req, res) {
     if (req.user.role !== 'admin') {
