@@ -665,11 +665,11 @@ router.delete('/containers/:id', auth, adminController.deleteContainer);
  *       500:
  *         description: Server error
  */
-router.post('/shipments', auth, adminController.createShipment);
+router.post('/booking/shipments', auth, adminController.createShipment);
 
 /**
  * @swagger
- * /api/admin/shipments/{id}/dimensions:
+ * /api/admin/booking/shipments/{id}/dimensions:
  *   put:
  *     summary: Update shipment package dimensions
  *     tags: [Admin]
@@ -700,11 +700,11 @@ router.post('/shipments', auth, adminController.createShipment);
  *       500:
  *         description: Server error
  */
-router.put('/shipments/:id/dimensions', auth, adminController.updateShipmentPackageDimensionsById);
+router.put('/booking/shipments/:id/dimensions', auth, adminController.updateShipmentPackageDimensionsById);
 
 /**
  * @swagger
- * /api/admin/shipments/{id}/photos:
+ * /api/admin/booking/shipments/{id}/photos:
  *   put:
  *     summary: Update shipment photos
  *     tags: [Admin]
@@ -738,11 +738,11 @@ router.put('/shipments/:id/dimensions', auth, adminController.updateShipmentPack
  *       500:
  *         description: Server error
  */
-router.put('/shipments/:id/photos', auth, upload.array('files'), adminController.updateShipmentPhotoById);
+router.put('/booking/shipments/:id/photos', auth, upload.array('files'), adminController.updateShipmentPhotoById);
 
 /**
  * @swagger
- * /api/admin/shipments/{id}/delivery-address:
+ * /api/admin/booking/shipments/{id}/delivery-address:
  *   put:
  *     summary: Update shipment delivery address
  *     tags: [Admin]
@@ -779,11 +779,11 @@ router.put('/shipments/:id/photos', auth, upload.array('files'), adminController
  *       500:
  *         description: Server error
  */
-router.put('/shipments/:id/delivery-address', auth, adminController.updateShipmentDeliveryAddressById);
+router.put('/booking/shipments/:id/delivery-address', auth, adminController.updateShipmentDeliveryAddressById);
 
 /**
  * @swagger
- * /api/admin/shipments/{id}/payment:
+ * /api/admin/booking/shipments/{id}/payment:
  *   put:
  *     summary: Update shipment payment status
  *     tags: [Admin]
@@ -816,11 +816,11 @@ router.put('/shipments/:id/delivery-address', auth, adminController.updateShipme
  *       500:
  *         description: Server error
  */
-router.put('/shipments/:id/payment', auth, adminController.updateShipmentPaymentStatusById);
+router.put('/booking/shipments/:id/payment', auth, adminController.updateShipmentPaymentStatusById);
 
 /**
  * @swagger
- * /api/admin/shipments/{id}/pickup-time:
+ * /api/admin/booking/shipments/{id}/pickup-time:
  *   put:
  *     summary: Update shipment pickup date and time
  *     tags: [Admin]
@@ -850,11 +850,11 @@ router.put('/shipments/:id/payment', auth, adminController.updateShipmentPayment
  *       500:
  *         description: Server error
  */
-router.put('/shipments/:id/pickup-time', auth, adminController.updateShipmentPickupDateTimeById);
+router.put('/booking/shipments/:id/pickup-time', auth, adminController.updateShipmentPickupDateTimeById);
 
 /**
  * @swagger
- * /api/admin/shipments/{id}/cancel:
+ * /api/admin/booking/shipments/{id}/cancel:
  *   put:
  *     summary: Cancel shipment
  *     tags: [Admin]
@@ -874,11 +874,11 @@ router.put('/shipments/:id/pickup-time', auth, adminController.updateShipmentPic
  *       500:
  *         description: Server error
  */
-router.put('/shipments/:id/cancel', auth, adminController.cancelShipment);
+router.put('/booking/shipments/:id/cancel', auth, adminController.cancelShipment);
 
 /**
  * @swagger
- * /api/admin/shipments/track/{trackingNumber}:
+ * /api/admin/booking/shipments/track/{trackingNumber}:
  *   get:
  *     summary: Track shipment by tracking number
  *     tags: [Admin]
@@ -898,7 +898,7 @@ router.put('/shipments/:id/cancel', auth, adminController.cancelShipment);
  *       500:
  *         description: Server error
  */
-router.get('/shipments/track/:trackingNumber', auth, adminController.trackShipment);
+router.get('/booking/shipments/track/:trackingNumber', auth, adminController.trackShipment);
 
 
 module.exports = router;
