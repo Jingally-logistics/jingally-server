@@ -120,6 +120,7 @@ const BookShipment = sequelize.define('BookShipment', {
   }
 }, {
   timestamps: true,
+  tableName: 'BookShipments',
   hooks: {
     beforeCreate: (shipment) => {
       // Generate tracking number

@@ -1,5 +1,15 @@
+const { ValidationError } = require('sequelize');
 const { User, Shipment, Address, Settings, Driver, Container, BookShipment } = require('../models');
 const emailVerificationService = require('../services/email-verification.service');
+
+const cloudinary = require('cloudinary').v2;
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 class AdminController {
   // Get all users
