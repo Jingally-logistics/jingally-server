@@ -633,4 +633,271 @@ router.put('/containers/:id', auth, adminController.updateContainer);
 router.delete('/containers/:id', auth, adminController.deleteContainer);
 
 
+/**
+ * @swagger
+ * /api/admin/shipments:
+ *   post:
+ *     summary: Create a new shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               serviceType:
+ *                 type: string
+ *               packageType:
+ *                 type: string
+ *               packageDescription:
+ *                 type: string
+ *               fragile:
+ *                 type: boolean
+ *     responses:
+ *       201:
+ *         description: Shipment created successfully
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: Server error
+ */
+router.post('/shipments', auth, adminController.createShipment);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/dimensions:
+ *   put:
+ *     summary: Update shipment package dimensions
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               dimensions:
+ *                 type: string
+ *               weight:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Package dimensions updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/dimensions', auth, adminController.updateShipmentPackageDimensionsById);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/photos:
+ *   put:
+ *     summary: Update shipment photos
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               files:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *     responses:
+ *       200:
+ *         description: Photos updated successfully
+ *       400:
+ *         description: No files provided
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/photos', auth, upload.array('files'), adminController.updateShipmentPhotoById);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/delivery-address:
+ *   put:
+ *     summary: Update shipment delivery address
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               deliveryAddress:
+ *                 type: string
+ *               pickupAddress:
+ *                 type: string
+ *               receiverName:
+ *                 type: string
+ *               receiverPhoneNumber:
+ *                 type: string
+ *               receiverEmail:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Delivery address updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/delivery-address', auth, adminController.updateShipmentDeliveryAddressById);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/payment:
+ *   put:
+ *     summary: Update shipment payment status
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               paymentStatus:
+ *                 type: string
+ *               amount:
+ *                 type: number
+ *               method:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Payment status updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/payment', auth, adminController.updateShipmentPaymentStatusById);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/pickup-time:
+ *   put:
+ *     summary: Update shipment pickup date and time
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               scheduledPickupTime:
+ *                 type: string
+ *                 format: date-time
+ *     responses:
+ *       200:
+ *         description: Pickup time updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/pickup-time', auth, adminController.updateShipmentPickupDateTimeById);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/cancel:
+ *   put:
+ *     summary: Cancel shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shipment cancelled successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/cancel', auth, adminController.cancelShipment);
+
+/**
+ * @swagger
+ * /api/admin/shipments/track/{trackingNumber}:
+ *   get:
+ *     summary: Track shipment by tracking number
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: trackingNumber
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shipment tracking details
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/shipments/track/:trackingNumber', auth, adminController.trackShipment);
+
+
 module.exports = router;

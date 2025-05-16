@@ -1,6 +1,7 @@
 const sequelize = require('../config/database');
 const User = require('./user');
 const Shipment = require('./shipment');
+const BookShipment = require('./bookShipment');
 const Settings = require('./settings');
 const Address = require('./address');
 const Driver = require('./driver');
@@ -13,6 +14,16 @@ User.hasMany(Shipment, {
 });
 
 Shipment.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user'
+});
+
+User.hasMany(BookShipment, {
+  foreignKey: 'userId',
+  as: 'bookShipments'
+});
+
+BookShipment.belongsTo(User, {
   foreignKey: 'userId',
   as: 'user'
 });
@@ -80,6 +91,7 @@ const syncDatabase = async () => {
     await Settings.sync({ alter: process.env.NODE_ENV === 'development' });
     await Container.sync({ alter: process.env.NODE_ENV === 'development' });
     await Shipment.sync({ alter: process.env.NODE_ENV === 'development' });
+    await BookShipment.sync({ alter: process.env.NODE_ENV === 'development' });
     console.log('Database synced successfully');
   } catch (error) {
     console.error('Error syncing database:', error);
@@ -95,5 +107,6 @@ module.exports = {
   Address,
   Driver,
   Container,
+  BookShipment,
   syncDatabase
 };
