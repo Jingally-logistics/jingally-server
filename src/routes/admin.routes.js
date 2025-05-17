@@ -669,6 +669,24 @@ router.post('/booking/shipments', auth, adminController.createShipment);
 
 /**
  * @swagger
+ * /api/admin/shipments:
+ *   get:
+ *     summary: Get all shipments
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       201:
+ *         description: Shipment created successfully
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: Server error
+ */
+router.get('/booking/shipments', auth, adminController.getAllShipments);
+
+/**
+ * @swagger
  * /api/admin/booking/shipments/{id}/dimensions:
  *   put:
  *     summary: Update shipment package dimensions

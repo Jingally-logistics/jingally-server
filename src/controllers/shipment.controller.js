@@ -61,7 +61,7 @@ class ShipmentController {
         order: [['createdAt', 'DESC']]
       });
 
-      res.json({
+      return res.json({
         success: true,
         data: shipments
       });
