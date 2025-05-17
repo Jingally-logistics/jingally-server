@@ -816,17 +816,18 @@ class AdminController {
         receiverName: req.body.receiverName,
         receiverPhoneNumber: req.body.receiverPhoneNumber,
         receiverEmail: req.body.receiverEmail,
+        deliveryType: req.body.deliveryType,
       }
 
       await shipment.update(bodyData); 
 
-      res.json({
+      return res.json({
         success: true,
         data: shipment,
         message: 'Shipment delivery address updated successfully'
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: 'Error updating shipment delivery address',
         error: error.message

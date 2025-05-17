@@ -51,6 +51,11 @@ const Shipment = sequelize.define('Shipment', {
     type: DataTypes.JSON,
     allowNull: true
   },
+  deliveryType: {
+    type: DataTypes.ENUM('park', 'home'),
+    allowNull: true,
+    defaultValue: 'home'
+  },
   scheduledPickupTime: {
     type: DataTypes.DATE,
     allowNull: true

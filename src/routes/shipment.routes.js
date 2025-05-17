@@ -531,6 +531,9 @@ router.patch('/:id/photos',
  *               receiverPhoneNumber:
  *                 type: string
  *                 description: Phone number of the receiver
+ *               deliveryType:
+ *                 type: string
+ *                 description: Delivery type (park or home)
  *     responses:
  *       200:
  *         description: Delivery address updated successfully

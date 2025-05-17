@@ -789,6 +789,8 @@ router.put('/booking/shipments/:id/photos', auth, upload.array('files'), adminCo
  *                 type: string
  *               receiverEmail:
  *                 type: string
+ *               deliveryType:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Delivery address updated successfully

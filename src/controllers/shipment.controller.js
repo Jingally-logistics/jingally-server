@@ -262,6 +262,7 @@ class ShipmentController {
         receiverName: req.body.receiverName,
         receiverPhoneNumber: req.body.receiverPhoneNumber,
         receiverEmail: req.body.receiverEmail,
+        deliveryType: req.body.deliveryType,
       }
 
       await shipment.update(bodyData); 
