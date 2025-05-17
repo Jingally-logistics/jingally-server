@@ -845,7 +845,7 @@ class AdminController {
         },
         include: [{
           model: User,
-          as: 'user',
+          as: 'admin',
           attributes: ['email', 'firstName', 'lastName']
         }]
       });
@@ -890,14 +890,14 @@ class AdminController {
         shipment              // shipment object
       );
 
-      res.json({
+      return res.json({
         success: true,
         data: shipment,
         message: 'Shipment payment status updated successfully'
       });
     } catch (error) {
       console.error('Error in updateShipmentPaymentStatusById:', error);
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: 'Error updating shipment payment status',
         error: error.message
