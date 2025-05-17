@@ -683,7 +683,7 @@ router.post('/booking/shipments', auth, adminController.createShipment);
  *       500:
  *         description: Server error
  */
-router.get('/booking/shipments', auth, adminController.getAllShipments);
+router.get('/booking/shipments', auth, adminController.getUserShipments);
 
 /**
  * @swagger
