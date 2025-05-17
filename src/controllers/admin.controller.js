@@ -233,7 +233,14 @@ class AdminController {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
-      const shipment = await Shipment.findOne({where: {id: req.params.id}});
+      const shipment = await Shipment.findOne({
+        where: { id: req.params.id },
+        include: [{
+          model: User,
+          as: 'user'
+        }]
+      });
+      
       if (!shipment) {
         return res.status(404).json({ error: 'Shipment not found' });
       }
@@ -242,13 +249,13 @@ class AdminController {
       await shipment.update({ status });
       
       // Send notification to user if status changes
-      const user = await User.findOne({where: {id: shipment.userId}});
-      if (user) {
-        await emailVerificationService.sendBookingConfirmationEmail(user, shipment);
+      if (shipment.user) {
+        await emailVerificationService.sendBookingConfirmationEmail(shipment.user, shipment);
       }
       
       res.json(shipment);
     } catch (error) {
+      console.error('Error updating shipment status:', error);
       res.status(500).json({ error: 'Error updating shipment status' });
     }
   }
@@ -900,69 +907,6 @@ class AdminController {
       return res.status(500).json({
         success: false,
         message: 'Error updating shipment payment status',
-        error: error.message
-      });
-    }
-  }
-
-  // Update shipment status
-  async updateShipmentStatus(req, res) {
-    try {
-      const { status } = req.body;
-      const shipment = await BookShipment.findOne({
-        where: {
-          id: req.params.id,
-          adminId: req.user.id
-        },
-        include: [
-          {
-            model: User,
-            as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email']
-          },
-          {
-            model: Driver,
-            as: 'driver',
-            attributes: ['id', 'firstName', 'lastName', 'phone']
-          },,
-          {
-            model: Container,
-            as: 'container',
-            attributes: ['containerNumber','type','capacity','location','status']
-          }
-        ]
-      });
-
-      if (!shipment) {
-        return res.status(404).json({
-          success: false,
-          message: 'Shipment not found'
-        });
-      }
-
-      // Store old status for comparison
-      const oldStatus = shipment.status;
-      await shipment.update({ status });
-
-      // Only send email if status has changed
-      if (oldStatus !== status) {
-        try {
-          await emailVerificationService.sendShipmentStatusUpdateEmail(shipment.user, shipment);
-        } catch (emailError) {
-          console.error('Error sending status update email:', emailError);
-          // Continue with the response even if email fails
-        }
-      }
-
-      res.json({
-        success: true,
-        data: shipment,
-        message: 'Shipment status updated successfully'
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Error updating shipment status',
         error: error.message
       });
     }
