@@ -233,7 +233,7 @@ class AdminController {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
-      const shipment = await Shipment.findByPk(req.params.id);
+      const shipment = await Shipment.findOne({where: {id: req.params.id}});
       if (!shipment) {
         return res.status(404).json({ error: 'Shipment not found' });
       }
@@ -242,7 +242,7 @@ class AdminController {
       await shipment.update({ status });
       
       // Send notification to user if status changes
-      const user = await User.findByPk(shipment.userId);
+      const user = await User.findOne({where: {id: shipment.userId}});
       if (user) {
         await emailVerificationService.sendBookingConfirmationEmail(user, shipment);
       }
