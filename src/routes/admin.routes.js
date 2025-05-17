@@ -1019,4 +1019,37 @@ router.post('/booking/shipments/assign-driver', auth, adminController.assignDriv
 router.post('/booking/shipments/assign-container', auth, adminController.assignContainerToBooking);
 
 
+/**
+ * @swagger
+ * /api/admin/booking/shipments/payment-status:
+ *   put:
+ *     summary: Update booking payment status
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               paymentStatus:
+ *                 type: string
+ *                 enum: [pending, paid, failed]
+ *     responses:
+ *       200:
+ *         description: Payment status updated successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/booking/shipments/payment-status', auth, adminController.updateBookingPaymentStatus);
+
+
 module.exports = router;

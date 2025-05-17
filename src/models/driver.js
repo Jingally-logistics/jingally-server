@@ -43,6 +43,10 @@ const Driver = sequelize.define('Driver', {
   role: {
     type: DataTypes.ENUM('driver', 'admin'),
     defaultValue: 'driver'
+  },
+  country: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   hooks: {

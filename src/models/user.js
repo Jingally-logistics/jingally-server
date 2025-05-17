@@ -43,6 +43,10 @@ const User = sequelize.define('User', {
   role: {
     type: DataTypes.ENUM('user', 'driver', 'admin'),
     defaultValue: 'user'
+  },
+  country: {
+    type: DataTypes.STRING,
+    allowNull: true
   }
 }, {
   hooks: {

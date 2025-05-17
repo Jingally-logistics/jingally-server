@@ -48,7 +48,7 @@ class AdminController {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
-      const { firstName, lastName, email, phone } = req.body;
+      const { firstName, lastName, email, phone, country } = req.body;
       
       // Check if driver already exists
       const existingDriver = await Driver.findOne({ where: { email } });
@@ -65,7 +65,8 @@ class AdminController {
         email,
         phone,
         password, // Note: Password should be hashed in the model
-        role: 'driver'
+        role: 'driver',
+        country
       });
 
       // Send verification email
@@ -184,14 +185,14 @@ class AdminController {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
-      const { firstName, lastName, email, phone } = req.body;
+      const { firstName, lastName, email, phone, country } = req.body;
       // Check if driver already exists
       const existingAdmin = await User.findOne({ where: { email } });
       if (existingAdmin) {
         return res.status(400).json({ error: 'Admin with this email already exists' });
       }
       const password = firstName+'jingallyAdmin';
-      const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password });
+      const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password, country });
       // Send verification email
       await emailVerificationService.sendVerificationEmail(admin.email, password);
       return res.status(201).json(admin);
@@ -1100,6 +1101,28 @@ async assignContainerToBooking(req, res) {
     } catch (error) {
         return res.status(500).json({ error: 'Error assigning container to shipment' });
     }
+}
+
+// update bank transfer payment status
+async updateBookingPaymentStatus(req, res) {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Unauthorized' });
+  }
+  try {
+    const { shipmentId, paymentStatus } = req.body;
+    const shipment = await BookShipment.findByPk(shipmentId);
+    if (!shipment) {
+      return res.status(404).json({ error: 'Shipment not found' });
+    }
+    // if(shipment.paymentMethod !== 'bank_transfer') {
+    //   return res.status(400).json({ error: 'Shipment payment method is not bank transfer' });
+    // }
+    
+    await shipment.update({ paymentStatus });
+    res.json(shipment);
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating bank transfer payment status' });
+  }
 }
 
 }
