@@ -920,5 +920,103 @@ router.put('/booking/shipments/:id/cancel', auth, adminController.cancelShipment
  */
 router.get('/booking/shipments/track/:trackingNumber', auth, adminController.trackShipment);
 
+/**
+ * @swagger
+ * /api/admin/booking/shipments/{id}/status:
+ *   put:
+ *     summary: Update shipment status
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [pending, picked_up, in_transit, delivered, cancelled]
+ *     responses:
+ *       200:
+ *         description: Shipment status updated successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/booking/shipments/:id/status', auth, adminController.updateBookingStatus);
+
+/**
+ * @swagger
+ * /api/admin/booking/shipments/assign-driver:
+ *   post:
+ *     summary: Assign driver to shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               driverId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Driver assigned successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/booking/shipments/assign-driver', auth, adminController.assignDriverToBooking);
+
+/**
+ * @swagger
+ * /api/admin/booking/shipments/assign-container:
+ *   post:
+ *     summary: Assign container to shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               containerId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Container assigned successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Shipment or container not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/booking/shipments/assign-container', auth, adminController.assignContainerToBooking);
+
 
 module.exports = router;

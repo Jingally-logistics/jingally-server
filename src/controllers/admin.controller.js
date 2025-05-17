@@ -1085,6 +1085,76 @@ class AdminController {
       });
     }
   }
+
+  // Update booking status
+  async updateBookingStatus(req, res) {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const shipment = await BookShipment.findOne({where: {id: req.params.id}});
+      if (!shipment) {
+        return res.status(404).json({ error: 'Shipment not found' });
+      }
+
+      const { status } = req.body;
+      await shipment.update({ status });
+      
+      // Send notification to user if status changes
+      const user = await User.findOne({where: {id: shipment.userId}});
+      if (user) {
+        await emailVerificationService.sendBookingConfirmationEmail(user, shipment);
+      }
+      
+      res.json(shipment);
+    } catch (error) {
+      res.status(500).json({ error: 'Error updating shipment status' });
+    }
+  }
+
+  // assign driver to shipment
+  async assignDriverToBooking(req, res) {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+        const { shipmentId, driverId } = req.body;
+        const shipment = await BookShipment.findByPk(shipmentId);
+        if (!shipment) {
+        return res.status(404).json({ error: 'Shipment not found' });
+        }
+
+        await shipment.update({ driverId });
+        return res.json(shipment);
+    } catch (error) {
+        return res.status(500).json({ error: 'Error assigning driver to shipment' });
+    }
+}
+
+// assign container to shipment
+async assignContainerToBooking(req, res) {
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+        const { shipmentId, containerId } = req.body;
+        const shipment = await BookShipment.findByPk(shipmentId);
+        if (!shipment) {
+            return res.status(404).json({ error: 'Shipment not found' });
+        }
+
+        const container = await Container.findByPk(containerId);
+        if (!container) {
+            return res.status(404).json({ error: 'Container not found' });
+        }
+
+        await shipment.update({ containerID:containerId });
+        return res.json(shipment);
+    } catch (error) {
+        return res.status(500).json({ error: 'Error assigning container to shipment' });
+    }
+}
+
 }
 
 module.exports = new AdminController();
