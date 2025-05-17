@@ -427,12 +427,14 @@ class AdminController {
     try {
       const [
         totalUsers,
+        totalAdminUsers,
         totalShipments,
         pendingShipments,
         completedShipments,
         totalRevenue
       ] = await Promise.all([
         User.count(),
+        User.count({ where: { role: 'admin' } }),
         Shipment.count(),
         Shipment.count({ where: { status: 'pending' } }),
         Shipment.count({ where: { status: 'delivered' } }),
@@ -441,6 +443,7 @@ class AdminController {
 
       res.json({
         totalUsers,
+        totalAdminUsers,
         totalShipments,
         pendingShipments,
         completedShipments,
