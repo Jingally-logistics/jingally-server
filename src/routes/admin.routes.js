@@ -687,6 +687,31 @@ router.get('/booking/shipments', auth, adminController.getUserShipments);
 
 /**
  * @swagger
+ * /api/admin/booking/shipments/{id}:
+ *   get:
+ *     summary: Get shipment by ID
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shipment retrieved successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/booking/shipments/:id', auth, adminController.getBookingById);
+
+
+/**
+ * @swagger
  * /api/admin/booking/shipments/{id}/dimensions:
  *   put:
  *     summary: Update shipment package dimensions

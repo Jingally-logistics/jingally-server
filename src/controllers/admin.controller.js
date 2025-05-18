@@ -640,7 +640,7 @@ class AdminController {
   }
 
   // Get shipment by ID
-  async getShipmentById(req, res) {
+  async getBookingById(req, res) {
     try {
       const shipment = await BookShipment.findOne({
         where: {
