@@ -1076,5 +1076,43 @@ router.post('/booking/shipments/assign-container', auth, adminController.assignC
  */
 router.put('/booking/shipments/payment-status', auth, adminController.updateBookingPaymentStatus);
 
+/**
+ * @swagger
+ * /api/admin/booking/shipments/user-info:
+ *   put:
+ *     summary: Update shipment user information
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               userInfo:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   phone:
+ *                     type: string
+ *     responses:
+ *       200:
+ *         description: User information updated successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/booking/shipments/user-info', auth, adminController.updateUserInfo);
+
 
 module.exports = router;

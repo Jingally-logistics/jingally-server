@@ -1048,10 +1048,8 @@ class AdminController {
       const { status } = req.body;
       await shipment.update({ status });
       
-      // Send notification to user if status changes
-      const user = await User.findOne({where: {id: shipment.userId}});
-      if (user) {
-        await emailVerificationService.sendBookingConfirmationEmail(user, shipment);
+      if(shipment.userInfo.email) {
+        await emailVerificationService.sendBookingConfirmationEmail(shipment.userInfo, shipment);
       }
       
       res.json(shipment);
@@ -1122,6 +1120,25 @@ async updateBookingPaymentStatus(req, res) {
     res.json(shipment);
   } catch (error) {
     res.status(500).json({ error: 'Error updating bank transfer payment status' });
+  }
+}
+
+// update user info
+async updateUserInfo(req, res) {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Unauthorized' });
+  }
+  try {
+    const { shipmentId, userInfo } = req.body;
+    const shipment = await BookShipment.findByPk(shipmentId);
+    if (!shipment) {
+      return res.status(404).json({ error: 'Shipment not found' });
+    }
+
+    await shipment.update({ userInfo });
+    res.json(shipment);
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating user info' });
   }
 }
 
