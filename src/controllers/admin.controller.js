@@ -166,7 +166,7 @@ class AdminController {
 
   // Get all Admins
   async getAllAdmins(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -181,18 +181,18 @@ class AdminController {
 
   // create Admin
   async createAdmin(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
-      const { firstName, lastName, email, phone, country } = req.body;
+      const { firstName, lastName, email, phone, country, gender } = req.body;
       // Check if driver already exists
       const existingAdmin = await User.findOne({ where: { email } });
       if (existingAdmin) {
         return res.status(400).json({ error: 'Admin with this email already exists' });
       }
       const password = firstName+'jingallyAdmin';
-      const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password, country });
+      const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password, country, gender });
       // Send verification email
       await emailVerificationService.sendVerificationEmail(admin.email, password);
       return res.status(201).json(admin);
