@@ -14,7 +14,7 @@ cloudinary.config({
 class AdminController {
   // Get all users
   async getAllUsers(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -29,7 +29,7 @@ class AdminController {
 
   // Get all drivers
   async getAllDrivers(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try { 
@@ -44,7 +44,7 @@ class AdminController {
 
   // create Driver
   async createDriver(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -90,7 +90,7 @@ class AdminController {
 
   // Get user by ID
   async getUserById(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -114,7 +114,7 @@ class AdminController {
 
   // Update user
   async updateUser(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -133,7 +133,7 @@ class AdminController {
 
   // Get all shipments
   async getAllShipments(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -166,7 +166,7 @@ class AdminController {
 
   // Get all Admins
   async getAllAdmins(req, res) {
-    if (req.user.role !== 'super_admin') {
+    if (req.user.role !== 'super_admin' && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -181,7 +181,7 @@ class AdminController {
 
   // create Admin
   async createAdmin(req, res) {
-    if (req.user.role !== 'super_admin') {
+    if (req.user.role !== 'super_admin' && req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -203,7 +203,7 @@ class AdminController {
 
   // Get shipment by ID
   async getShipmentById(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -230,7 +230,7 @@ class AdminController {
 
   // Update shipment status
   async updateShipmentStatus(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -263,7 +263,7 @@ class AdminController {
 
   // update bank transfer payment status
   async updateBankTransferPaymentStatus(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -285,7 +285,7 @@ class AdminController {
 
     // assign driver to shipment
     async assignDriverToShipment(req, res) {
-        if (req.user.role !== 'admin') {
+        if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
             return res.status(403).json({ error: 'Unauthorized' });
         }
         try {
@@ -304,7 +304,7 @@ class AdminController {
 
     // assign container to shipment
     async assignContainerToShipment(req, res) {
-        if (req.user.role !== 'admin') {
+        if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
             return res.status(403).json({ error: 'Unauthorized' });
         }
         try {
@@ -328,7 +328,7 @@ class AdminController {
 
   // Get all addresses
   async getAllAddresses(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -348,7 +348,7 @@ class AdminController {
 
   // Verify address
   async verifyAddress(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -367,7 +367,7 @@ class AdminController {
 
   // Get user settings
   async getUserSettings(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -385,7 +385,7 @@ class AdminController {
 
   // Update user settings
   async updateUserSettings(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -422,7 +422,7 @@ class AdminController {
 
   // Get dashboard statistics
   async getDashboardStats(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -457,7 +457,7 @@ class AdminController {
 
   // Get all containers
   async getAllContainers(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -470,7 +470,7 @@ class AdminController {
 
   // Create new container
   async createContainer(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -515,7 +515,7 @@ class AdminController {
 
   // Update container
   async updateContainer(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin' && req.user.role !== 'driver') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -556,7 +556,7 @@ class AdminController {
 
   // Delete container
   async deleteContainer(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -1060,7 +1060,7 @@ class AdminController {
 
   // assign driver to shipment
   async assignDriverToBooking(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
         return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -1079,7 +1079,7 @@ class AdminController {
 
 // assign container to shipment
 async assignContainerToBooking(req, res) {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
         return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
@@ -1103,7 +1103,7 @@ async assignContainerToBooking(req, res) {
 
 // update bank transfer payment status
 async updateBookingPaymentStatus(req, res) {
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
     return res.status(403).json({ error: 'Unauthorized' });
   }
   try {
@@ -1125,7 +1125,7 @@ async updateBookingPaymentStatus(req, res) {
 
 // update user info
 async updateUserInfo(req, res) {
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
     return res.status(403).json({ error: 'Unauthorized' });
   }
   try {
