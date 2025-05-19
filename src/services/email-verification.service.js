@@ -57,6 +57,30 @@ class EmailVerificationService {
     }
   }
 
+  // Send verification email with code
+  async sendNewUserEmail(user, password) {
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: user.email,
+      subject: 'Welcome to Jingally Logistics',
+      html: `
+        <h1>Welcome to Jingally Logistics!</h1>
+        <p>Your account has been created successfully.</p>
+        ${password ? `<p>Your password is: ${password}</p>` : ''}
+        <p>You can now login to your account using your email and password.</p>
+        <p>If you didn't create an account, please ignore this email.</p>
+      `
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error('Error sending welcome email:', error);
+      return false;
+    }
+  }
+
   // Verify email code
   async verifyEmail(userId, code) {
     try {

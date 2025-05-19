@@ -66,11 +66,12 @@ class AdminController {
         phone,
         password, // Note: Password should be hashed in the model
         role: 'driver',
-        country
+        country,
+        isVerified: true
       });
 
       // Send verification email
-      await emailVerificationService.sendVerificationEmail(driver, password);
+      await emailVerificationService.sendNewUserEmail(driver, password);
 
       res.status(201).json({
         message: 'Driver created successfully',
@@ -192,9 +193,9 @@ class AdminController {
         return res.status(400).json({ error: 'Admin with this email already exists' });
       }
       const password = firstName+'jingallyAdmin';
-      const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password, country, gender });
+      const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password, country, gender, isVerified: true });
       // Send verification email
-      await emailVerificationService.sendVerificationEmail(admin, password);
+      await emailVerificationService.sendNewUserEmail(admin, password);
       return res.status(201).json(admin);
     } catch (error) {
       return res.status(500).json({ error: 'Error creating admin' });
