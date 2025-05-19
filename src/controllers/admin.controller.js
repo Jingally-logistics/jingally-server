@@ -70,7 +70,7 @@ class AdminController {
       });
 
       // Send verification email
-      await emailVerificationService.sendVerificationEmail(driver.email, password);
+      await emailVerificationService.sendVerificationEmail(driver, password);
 
       res.status(201).json({
         message: 'Driver created successfully',
@@ -194,7 +194,7 @@ class AdminController {
       const password = firstName+'jingallyAdmin';
       const admin = await User.create({ firstName, lastName, email, phone, role: 'admin', password, country, gender });
       // Send verification email
-      await emailVerificationService.sendVerificationEmail(admin.email, password);
+      await emailVerificationService.sendVerificationEmail(admin, password);
       return res.status(201).json(admin);
     } catch (error) {
       return res.status(500).json({ error: 'Error creating admin' });
