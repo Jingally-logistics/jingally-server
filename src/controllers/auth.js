@@ -73,7 +73,8 @@ const login = async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        isVerified: user.isVerified
+        isVerified: user.isVerified,
+        role: user.role
       },
       token
     });
