@@ -162,7 +162,9 @@ class AdminController {
       // Add where clause only for admin role
       if (req.user.role === 'admin') {
         queryOptions.where = {
-          '$pickupAddress.country$': req.user.country == "uk"? "United Kingdom" : req.user.country
+          pickupAddress: {
+            [Op.like]: `%${req.user.country === "uk" ? "United Kingdom" : req.user.country}%`
+          }
         };
       }
 
