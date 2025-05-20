@@ -1,4 +1,4 @@
-const { ValidationError } = require('sequelize');
+const { ValidationError, Op } = require('sequelize');
 const { User, Shipment, Address, Settings, Driver, Container, BookShipment } = require('../models');
 const emailVerificationService = require('../services/email-verification.service');
 
