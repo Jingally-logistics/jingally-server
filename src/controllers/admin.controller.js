@@ -138,7 +138,7 @@ class AdminController {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     try {
-      const shipments = await Shipment.findAll({
+      const queryOptions = {
         include: [
           {
             model: User,
@@ -157,7 +157,16 @@ class AdminController {
           }
         ],
         order: [['createdAt', 'DESC']]
-      });
+      };
+
+      // Add where clause only for admin role
+      if (req.user.role === 'admin') {
+        queryOptions.where = {
+          '$pickupAddress.country$': req.user.country == "uk"? "United Kingdom" : req.user.country
+        };
+      }
+
+      const shipments = await Shipment.findAll(queryOptions);
       res.json(shipments);
     } catch (error) {
       console.error('Error fetching shipments:', error);
