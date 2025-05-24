@@ -661,7 +661,7 @@ router.patch('/:id/pickup-date-time', shipmentController.updateShipmentPickupDat
 // get price guides
 /**
  * @swagger
- * /shipments/price-guides:
+ * /shipments/price-guide:
  *   get:
  *     tags: [Shipments]
  *     summary: Get all price guides
@@ -697,6 +697,6 @@ router.patch('/:id/pickup-date-time', shipmentController.updateShipmentPickupDat
  *       500:
  *         description: Error retrieving price guides
  */
-router.get('/price-guides', shipmentController.getPriceGuides);
+router.get('/price-guide', shipmentController.getPriceGuides);
 
 module.exports = router;

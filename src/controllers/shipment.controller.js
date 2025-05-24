@@ -542,11 +542,7 @@ class ShipmentController {
   async getPriceGuides(req, res){
   try {
     const priceGuides = await PriceGuide.findAll();
-    return res.json({
-      success: true,
-      data: priceGuides,
-      message: 'Price guides retrieved successfully'
-    });
+    return res.json(priceGuides);
   } catch (error) {
     return res.status(500).json({
       success: false,
