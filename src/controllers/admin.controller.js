@@ -1194,7 +1194,8 @@ async updateUserInfo(req, res) {
   // edit price guide
   async editPriceGuide(req, res) {
     try {
-      const { id, guideName, price } = req.body;
+      const { guideName, price } = req.body;
+      const {id} = req.params
       const priceGuide = await PriceGuide.findByPk(id);
       if (!priceGuide) {
         return res.status(404).json({ error: 'Price guide not found' });
