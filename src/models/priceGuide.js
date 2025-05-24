@@ -9,7 +9,7 @@ const PriceGuide = sequelize.define('PriceGuide', {
   },
   guideNumber: {
     type: DataTypes.STRING,
-    allowNull: false
+    unique: true
   },
   guideName: {
     type: DataTypes.STRING,
