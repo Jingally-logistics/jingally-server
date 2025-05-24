@@ -656,4 +656,47 @@ router.patch('/:id/payment-status', shipmentController.updateShipmentPaymentStat
  *         description: Error updating pickup date and time
  */
 router.patch('/:id/pickup-date-time', shipmentController.updateShipmentPickupDateTimeById);
+
+
+// get price guides
+/**
+ * @swagger
+ * /shipments/price-guides:
+ *   get:
+ *     tags: [Shipments]
+ *     summary: Get all price guides
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Price guides retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     format: uuid
+ *                   guideName:
+ *                     type: string
+ *                   guideNumber:
+ *                     type: string
+ *                   price:
+ *                     type: number
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *       401:
+ *         description: Not authenticated
+ *       500:
+ *         description: Error retrieving price guides
+ */
+router.get('/price-guides', auth, shipmentController.getPriceGuides);
+
 module.exports = router;

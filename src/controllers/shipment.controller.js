@@ -2,7 +2,7 @@ const Shipment = require('../models/shipment');
 const { ValidationError } = require('sequelize');
 const cloudinary = require('cloudinary').v2;
 const emailVerificationService = require('../services/email-verification.service');
-const { User, Driver, Container } = require('../models');
+const { User, Driver, Container, PriceGuide } = require('../models');
 
 // Configure Cloudinary
 cloudinary.config({
@@ -536,6 +536,24 @@ class ShipmentController {
         error: error.message
       });
     }
+  }
+
+  // getting price Guides
+  async getPriceGuides(req, res){
+  try {
+    const priceGuides = await PriceGuide.findAll();
+    return res.json({
+      success: true,
+      data: priceGuides,
+      message: 'Price guides retrieved successfully'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error retrieving price guides',
+      error: error.message
+    });
+  }
   }
 }
 
