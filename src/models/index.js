@@ -7,6 +7,7 @@ const Address = require('./address');
 const Driver = require('./driver');
 const Container = require('./containers');
 const PriceGuide = require('./priceGuide');
+const GuestShipment = require("./guestShipment");
 
 // Define associations
 User.hasMany(Shipment, {
@@ -44,6 +45,11 @@ BookShipment.belongsTo(Container, {
   as: 'container'
 });
 
+GuestShipment.belongsTo(Container, {
+  foreignKey: 'containerID',
+  as: 'container'
+});
+
 Shipment.belongsTo(Container, {
   foreignKey: 'containerID',
   as: 'container'
@@ -60,6 +66,11 @@ Driver.hasMany(BookShipment, {
 });
 
 BookShipment.belongsTo(Driver, {
+  foreignKey: 'driverId',
+  as: 'driver'
+});
+
+GuestShipment.belongsTo(Driver, {
   foreignKey: 'driverId',
   as: 'driver'
 });
@@ -95,7 +106,7 @@ Settings.belongsTo(Address, {
 });
 
 // Call associate methods if they exist
-const models = { User, Shipment, Settings, Address, Driver, Container, BookShipment, PriceGuide };
+const models = { User, Shipment, Settings, Address, Driver, Container, BookShipment, PriceGuide, GuestShipment };
 Object.values(models).forEach(model => {
   if (model.associate) {
     model.associate(models);
@@ -117,6 +128,7 @@ const syncDatabase = async () => {
     await Shipment.sync({ alter: process.env.NODE_ENV === 'development' });
     await BookShipment.sync({ alter: process.env.NODE_ENV === 'development' });
     await PriceGuide.sync({ alter: process.env.NODE_ENV === 'development' });
+    await GuestShipment.sync({ alter: process.env.NODE_ENV === 'development' });
     
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
     console.log('Database synced successfully');
@@ -136,5 +148,6 @@ module.exports = {
   Container,
   BookShipment,
   PriceGuide,
+  GuestShipment,
   syncDatabase
 };

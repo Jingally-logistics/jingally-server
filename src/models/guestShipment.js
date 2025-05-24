@@ -1,19 +1,15 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Shipment = sequelize.define('Shipment', {
+const GuestShipment = sequelize.define('GuestShipment', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
-  userId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: 'Users',
-      key: 'id'
-    }
+  userInfo: {
+    type: DataTypes.JSON,
+    allowNull: true
   },
   status: {
     type: DataTypes.ENUM('pending', 'picked_up', 'in_transit', 'delivered', 'cancelled'),
@@ -39,11 +35,11 @@ const Shipment = sequelize.define('Shipment', {
     type: DataTypes.FLOAT,
     allowNull: true
   },
-  dimensions: {
+  priceGuides:{
     type: DataTypes.JSON,
     allowNull: true
   },
-  priceGuides:{
+  dimensions: {
     type: DataTypes.JSON,
     allowNull: true
   },
@@ -133,4 +129,4 @@ const Shipment = sequelize.define('Shipment', {
   }
 });
 
-module.exports = Shipment;
+module.exports = GuestShipment;

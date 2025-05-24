@@ -101,7 +101,7 @@ const BookShipment = sequelize.define('BookShipment', {
     allowNull: true
   },
   paymentMethod: {
-    type: DataTypes.ENUM('paypal', 'bank_transfer', 'cash'),
+    type: DataTypes.ENUM('paypal', 'bank_transfer', 'cash','part_payment'),
     allowNull: true,
     defaultValue: 'paypal'
   },
