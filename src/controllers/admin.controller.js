@@ -1186,6 +1186,7 @@ async updateUserInfo(req, res) {
       const priceGuide = await PriceGuide.create({ guideName, price });
       return res.json(priceGuide);
     } catch (error) {
+      console.log(error)
       return res.status(500).json({ error: 'Error creating price guide' });
     }
   }
