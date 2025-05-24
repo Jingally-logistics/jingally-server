@@ -697,6 +697,6 @@ router.patch('/:id/pickup-date-time', shipmentController.updateShipmentPickupDat
  *       500:
  *         description: Error retrieving price guides
  */
-router.get('/price-guides', auth, shipmentController.getPriceGuides);
+router.get('/price-guides', shipmentController.getPriceGuides);
 
 module.exports = router;
