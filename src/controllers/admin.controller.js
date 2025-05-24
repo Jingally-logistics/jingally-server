@@ -707,6 +707,8 @@ class AdminController {
         }
       });
 
+      let bodyData = {};
+
       if (!shipment) {
         return res.status(404).json({
           success: false,
@@ -714,9 +716,15 @@ class AdminController {
         }); 
       }
 
-      const bodyData = {
-        dimensions: req.body.dimensions,
-        weight: req.body.weight,
+      if(req.body.priceGuides){
+        bodyData = {
+          priceGuides: req.body.priceGuides
+        }
+      }else{
+        bodyData = {
+          dimensions: req.body.dimensions,
+          weight: req.body.weight,
+        }
       }
 
       await shipment.update(bodyData);

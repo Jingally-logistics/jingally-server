@@ -43,6 +43,10 @@ const Shipment = sequelize.define('Shipment', {
     type: DataTypes.JSON,
     allowNull: true
   },
+  priceGuides:{
+    type: DataTypes.JSON,
+    allowNull: true
+  },
   pickupAddress: {
     type: DataTypes.JSON,
     allowNull: true

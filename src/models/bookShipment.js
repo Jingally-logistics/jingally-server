@@ -43,6 +43,10 @@ const BookShipment = sequelize.define('BookShipment', {
     type: DataTypes.FLOAT,
     allowNull: true
   },
+  priceGuides:{
+    type: DataTypes.JSON,
+    allowNull: true
+  },
   dimensions: {
     type: DataTypes.JSON,
     allowNull: true

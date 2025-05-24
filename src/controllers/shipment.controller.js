@@ -125,6 +125,7 @@ class ShipmentController {
           userId: req.user.id
         }
       });
+      let bodyData = {};
 
       if (!shipment) {
         return res.status(404).json({
@@ -133,9 +134,15 @@ class ShipmentController {
         }); 
       }
 
-      const bodyData = {
-        dimensions: req.body.dimensions,
-        weight: req.body.weight,
+      if(req.body.priceGuides){
+        bodyData = {
+          priceGuides: req.body.priceGuides
+        }
+      }else{
+        bodyData = {
+          dimensions: req.body.dimensions,
+          weight: req.body.weight,
+        }
       }
 
       await shipment.update(bodyData);
