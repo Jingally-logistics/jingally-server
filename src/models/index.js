@@ -6,6 +6,7 @@ const Settings = require('./settings');
 const Address = require('./address');
 const Driver = require('./driver');
 const Container = require('./containers');
+const PriceGuide = require('./priceGuide');
 
 // Define associations
 User.hasMany(Shipment, {
@@ -94,7 +95,7 @@ Settings.belongsTo(Address, {
 });
 
 // Call associate methods if they exist
-const models = { User, Shipment, Settings, Address, Driver, Container, BookShipment };
+const models = { User, Shipment, Settings, Address, Driver, Container, BookShipment, PriceGuide };
 Object.values(models).forEach(model => {
   if (model.associate) {
     model.associate(models);
@@ -115,6 +116,7 @@ const syncDatabase = async () => {
     await Settings.sync({ alter: process.env.NODE_ENV === 'development' });
     await Shipment.sync({ alter: process.env.NODE_ENV === 'development' });
     await BookShipment.sync({ alter: process.env.NODE_ENV === 'development' });
+    await PriceGuide.sync({ alter: process.env.NODE_ENV === 'development' });
     
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
     console.log('Database synced successfully');
@@ -133,5 +135,6 @@ module.exports = {
   Driver,
   Container,
   BookShipment,
+  PriceGuide,
   syncDatabase
 };

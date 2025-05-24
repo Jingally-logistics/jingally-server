@@ -1,5 +1,5 @@
 const { ValidationError, Op } = require('sequelize');
-const { User, Shipment, Address, Settings, Driver, Container, BookShipment } = require('../models');
+const { User, Shipment, Address, Settings, Driver, Container, BookShipment, PriceGuide } = require('../models');
 const emailVerificationService = require('../services/email-verification.service');
 
 const cloudinary = require('cloudinary').v2;
@@ -12,6 +12,8 @@ cloudinary.config({
 });
 
 class AdminController {
+
+  // ========= BASE ADMIN CONTROLLER =========
   // Get all users
   async getAllUsers(req, res) {
     if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
@@ -467,6 +469,8 @@ class AdminController {
     }
   }
 
+  // ========= CONTAINER CONTROLLER =========
+
   // Get all containers
   async getAllContainers(req, res) {
     if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
@@ -588,7 +592,7 @@ class AdminController {
 
 
 
-  // Shipment Bookings
+  // ========= SHIPMENT BOOKINGS CONTROLLER =========
   
   // Create a new shipment
   async createShipment(req, res) {
@@ -1154,6 +1158,60 @@ async updateUserInfo(req, res) {
   }
 }
 
+
+  //  ========= PRICE GUIDE CONTROLLER =========
+
+  // Get all price guides
+  async getAllPriceGuides(req, res) {
+    try {
+      const priceGuides = await PriceGuide.findAll();
+      return res.json(priceGuides);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error fetching price guides' });
+    }
+  }
+
+  // Create a new price guide
+  async createPriceGuide(req, res) {
+    try {
+      const { guideName, price } = req.body;
+      const priceGuide = await PriceGuide.create({ guideName, price });
+      return res.json(priceGuide);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error creating price guide' });
+    }
+  }
+
+  // edit price guide
+  async editPriceGuide(req, res) {
+    try {
+      const { id, guideName, price } = req.body;
+      const priceGuide = await PriceGuide.findByPk(id);
+      if (!priceGuide) {
+        return res.status(404).json({ error: 'Price guide not found' });
+      }
+      await priceGuide.update({ guideName, price });
+      return res.json(priceGuide);
+    } catch (error) {
+      return res.status(500).json({ error: 'Error editing price guide' });
+    }
+  }
+
+  // delete price guide
+  async deletePriceGuide(req, res) {
+    try {
+      const { id } = req.params;
+      const priceGuide = await PriceGuide.findByPk(id);
+      if (!priceGuide) {
+        return res.status(404).json({ error: 'Price guide not found' });
+      }
+      await priceGuide.destroy();
+      return res.json({ message: 'Price guide deleted successfully' });
+    } catch (error) {
+      return res.status(500).json({ error: 'Error deleting price guide' });
+    }
+  }
+  
 }
 
 module.exports = new AdminController();

@@ -633,6 +633,7 @@ router.put('/containers/:id', auth, adminController.updateContainer);
  */
 router.delete('/containers/:id', auth, adminController.deleteContainer);
 
+// ====== SHIPMENT BOOKINGS CONTROLLER ======
 
 /**
  * @swagger
@@ -1113,6 +1114,126 @@ router.put('/booking/shipments/payment-status', auth, adminController.updateBook
  *         description: Server error
  */
 router.put('/booking/shipments/user-info', auth, adminController.updateUserInfo);
+
+
+// ====== PRICE GUIDE CONTROLLER ======
+/**
+ * @swagger
+ * /api/admin/price-guide:
+ *   get:
+ *     summary: Get all price guides
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of price guides
+ *       403:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.get('/price-guide', auth, adminController.getAllPriceGuides);
+
+/**
+ * @swagger
+ * /api/admin/price-guide:
+ *   post:
+ *     summary: Create a new price guide
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               origin:
+ *                 type: string
+ *               destination:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               currency:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Price guide created successfully
+ *       403:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
+router.post('/price-guide', auth, adminController.createPriceGuide);
+
+/**
+ * @swagger
+ * /api/admin/price-guide/{id}:
+ *   put:
+ *     summary: Update a price guide
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               origin:
+ *                 type: string
+ *               destination:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               currency:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Price guide updated successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Price guide not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/price-guide/:id', auth, adminController.editPriceGuide);
+
+/**
+ * @swagger
+ * /api/admin/price-guide/{id}:
+ *   delete:
+ *     summary: Delete a price guide
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Price guide deleted successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Price guide not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/price-guide/:id', auth, adminController.deletePriceGuide);
 
 
 module.exports = router;
