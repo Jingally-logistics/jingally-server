@@ -26,6 +26,8 @@ app.use('/api/shipments', require('./routes/shipment.routes'));
 app.use('/api/settings', require('./routes/settings.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
 app.use('/api/drivers', require('./routes/driver.routes'))
+app.use('/api/price-guide', require('./routes/priceGuide.routes'));
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
