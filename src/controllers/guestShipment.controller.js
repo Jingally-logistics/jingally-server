@@ -1,0 +1,400 @@
+const { ValidationError } = require('sequelize');
+const cloudinary = require('cloudinary').v2;
+const emailVerificationService = require('../services/email-verification.service');
+const { User, Driver, Container, PriceGuide, GuestShipment } = require('../models');
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+class GuestShipmentController {
+  // Create a new guest shipment
+  async createShipment(req, res) {
+    const { serviceType, packageType, packageDescription, fragile } = req.body;
+    try {
+      const shipment = await GuestShipment.create({
+        serviceType,
+        packageType,
+        packageDescription,
+        fragile,
+      });
+
+      res.status(201).json({
+        success: true,
+        data: shipment,
+        message: 'Guest shipment created successfully'
+      });
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(400).json({
+          success: false,
+          message: 'Validation error',
+          errors: error.errors.map(err => ({
+            field: err.path,
+            message: err.message
+          }))
+        });
+      }
+
+      return res.status(500).json({
+        success: false,
+        message: 'Error creating guest shipment',
+        error: error.message
+      });
+    }
+  }
+
+  // Get shipment by tracking number
+  async trackShipment(req, res) {
+    try {
+      const { trackingNumber } = req.params;
+      const shipment = await GuestShipment.findOne({
+        where: { trackingNumber },
+        include: [
+          {
+            model: Driver,
+            as: 'driver',
+            attributes: ['id', 'firstName', 'lastName', 'phone']
+          },
+          {
+            model: Container,
+            as: 'container',
+            attributes: ['containerNumber','type','capacity','location','status']
+          }
+        ]
+      });
+
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: shipment
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Error tracking shipment',
+        error: error.message
+      });
+    }
+  }
+
+  // Update shipment package dimensions
+  async updateShipmentPackageDimensions(req, res) {
+    try {
+      const shipment = await GuestShipment.findOne({
+        where: {
+          id: req.params.id
+        }
+      });
+
+      let bodyData = {};
+
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        }); 
+      }
+
+      if(req.body.priceGuides){
+        bodyData = {
+          priceGuides: req.body.priceGuides
+        }
+      } else {
+        bodyData = {
+          dimensions: req.body.dimensions,
+          weight: req.body.weight,
+        }
+      }
+
+      await shipment.update(bodyData);
+
+      res.json({
+        success: true,
+        data: shipment,
+        message: 'Shipment package dimensions updated successfully'
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Error updating shipment package dimensions',
+        error: error.message
+      });
+    }
+  }
+
+  // Update shipment photos
+  async updateShipmentPhoto(req, res) {
+    try {
+      const shipment = await GuestShipment.findOne({
+        where: {
+          id: req.params.id
+        }
+      }); 
+
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });   
+      }
+
+      if (!req.files) {
+        return res.status(400).json({
+          success: false,
+          message: 'No files in request',
+          details: 'Make sure you are sending files with the correct field name'
+        });
+      }
+
+      const files = Array.isArray(req.files) ? req.files : [req.files];
+      
+      if (files.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'No files provided',
+          details: 'Please select at least one image to upload'
+        });
+      }
+
+      const uploadPromises = files.map(async (file) => {
+        return new Promise((resolve, reject) => {
+          cloudinary.uploader.upload_stream(
+            {
+              folder: 'shipments',
+              resource_type: 'auto'
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result.secure_url);
+            }
+          ).end(file.buffer);
+        });
+      });
+
+      try {
+        const uploadedImages = await Promise.all(uploadPromises);
+        shipment.images = [...(shipment.images || []), ...uploadedImages];
+        await shipment.save();
+
+        return res.status(200).json({
+          success: true,
+          data: shipment,
+          message: 'Shipment photos updated successfully'
+        });
+      } catch (uploadError) {
+        console.error('Upload error:', uploadError);
+        return res.status(400).json({
+          success: false,
+          message: 'Error uploading images',
+          error: uploadError.message
+        });
+      }
+    } catch (error) {
+      console.error('Server error:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error updating shipment photos',
+        error: error.message
+      });
+    }
+  }
+
+  // Update shipment delivery address
+  async updateShipmentDeliveryAddress(req, res) {
+    try {
+      const shipment = await GuestShipment.findOne({
+        where: {
+          id: req.params.id
+        }
+      });
+
+      if (!shipment) {
+        return res.status(404).json({ 
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      const bodyData = {
+        deliveryAddress: req.body.deliveryAddress,
+        pickupAddress: req.body.pickupAddress,
+        receiverName: req.body.receiverName,
+        receiverPhoneNumber: req.body.receiverPhoneNumber,
+        receiverEmail: req.body.receiverEmail,
+        deliveryType: req.body.deliveryType,
+      }
+
+      await shipment.update(bodyData); 
+
+      return res.json({
+        success: true,
+        data: shipment,
+        message: 'Shipment delivery address updated successfully'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error updating shipment delivery address',
+        error: error.message
+      });
+    }
+  }
+
+  // Update shipment payment status
+  async updateShipmentPaymentStatus(req, res) {
+    try {
+      const shipment = await GuestShipment.findOne({
+        where: {
+          id: req.params.id
+        }
+      });
+
+      if (!shipment) {
+        return res.status(404).json({ 
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      await shipment.update({ 
+        paymentStatus: req.body.paymentStatus, 
+        price: req.body.amount,
+        paymentMethod: req.body.method
+      });   
+
+      // Send payment confirmation email to the receiver if email exists
+      if (shipment.receiverEmail) {
+        const receiverUser = {
+          id: 'receiver',
+          email: shipment.receiverEmail,
+          firstName: shipment.receiverName?.split(' ')[0] || 'Customer',
+          lastName: shipment.receiverName?.split(' ')[1] || ''
+        };
+
+        await emailVerificationService.sendPaymentConfirmationEmail(
+          receiverUser,
+          shipment
+        );
+      }
+
+      // Send admin notification
+      await emailVerificationService.sendAdminBookingNotification(
+        'msheliapromise@gmail.com',  // admin email
+        shipment.userInfo,           // user info from shipment
+        shipment                     // shipment object
+      );
+
+      return res.json({
+        success: true,
+        data: shipment,
+        message: 'Shipment payment status updated successfully'
+      });
+    } catch (error) {
+      console.error('Error in updateShipmentPaymentStatus:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Error updating shipment payment status',
+        error: error.message
+      });
+    }
+  }
+
+  // Update shipment pickup date and time
+  async updateShipmentPickupDateTime(req, res) {
+    try {
+      const shipment = await GuestShipment.findOne({
+        where: {
+          id: req.params.id
+        }
+      });
+
+      if (!shipment) {
+        return res.status(404).json({   
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      // Calculate estimated delivery time (3 days after pickup)
+      const scheduledPickupTime = new Date(req.body.scheduledPickupTime);
+      const estimatedDeliveryTime = new Date(scheduledPickupTime);
+      estimatedDeliveryTime.setDate(estimatedDeliveryTime.getDate() + 3);
+
+      await shipment.update({ 
+        scheduledPickupTime,
+        estimatedDeliveryTime
+      });     
+
+      res.json({
+        success: true,
+        data: shipment,
+        message: 'Shipment pickup date and time updated successfully'
+      });   
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Error updating shipment pickup date and time',
+        error: error.message
+      });
+    }
+  }
+
+  // Cancel shipment
+  async cancelShipment(req, res) {
+    try {
+      const shipment = await GuestShipment.findOne({
+        where: {
+          id: req.params.id
+        }
+      });
+
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found or cannot be cancelled'
+        });
+      }
+
+      await shipment.update({ status: 'cancelled' });
+
+      return res.json({
+        success: true,
+        message: 'Shipment cancelled successfully'
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error cancelling shipment',
+        error: error.message
+      });
+    }
+  }
+
+    // updating user Information  
+    async updateUserInfo(req, res) {
+        try {
+          const { shipmentId, userInfo } = req.body;
+          const shipment = await GuestShipment.findByPk(shipmentId);
+          if (!shipment) {
+            return res.status(404).json({ error: 'Shipment not found' });
+          }
+      
+          await shipment.update({ userInfo });
+          res.json(shipment);
+        } catch (error) {
+          res.status(500).json({ error: 'Error updating user info' });
+        }
+    }
+}
+
+module.exports = new GuestShipmentController();

@@ -27,6 +27,7 @@ app.use('/api/settings', require('./routes/settings.routes'));
 app.use('/api/admin', require('./routes/admin.routes'));
 app.use('/api/drivers', require('./routes/driver.routes'))
 app.use('/api/price-guide', require('./routes/priceGuide.routes'));
+app.use('/api/guest-shipment', require('./routes/guestShipment.routes'))
 
 
 // Error handling middleware
