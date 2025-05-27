@@ -301,4 +301,19 @@ router.put('/:id/cancel', guestShipmentController.cancelShipment);
  */
 router.put('/user-info', guestShipmentController.updateUserInfo);
 
+/**
+ * @swagger
+ * /api/guest-shipments/price-guides:
+ *   get:
+ *     summary: Get all price guides
+ *     tags: [Guest Shipment]
+ *     responses:
+ *       200:
+ *         description: Price guides retrieved successfully
+ *       500:
+ *         description: Server error
+ */
+router.get('/price-guides', guestShipmentController.getPriceGuides);
+
+
 module.exports = router;

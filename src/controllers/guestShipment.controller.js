@@ -380,21 +380,41 @@ class GuestShipmentController {
     }
   }
 
-    // updating user Information  
-    async updateUserInfo(req, res) {
-        try {
-          const { shipmentId, userInfo } = req.body;
-          const shipment = await GuestShipment.findByPk(shipmentId);
-          if (!shipment) {
-            return res.status(404).json({ error: 'Shipment not found' });
-          }
-      
-          await shipment.update({ userInfo });
-          res.json(shipment);
-        } catch (error) {
-          res.status(500).json({ error: 'Error updating user info' });
-        }
+  // updating user Information  
+  async updateUserInfo(req, res) {
+    try {
+      const { shipmentId, userInfo } = req.body;
+      const shipment = await GuestShipment.findByPk(shipmentId);
+      if (!shipment) {
+        return res.status(404).json({ error: 'Shipment not found' });
+      }
+  
+      await shipment.update({ userInfo });
+      res.json(shipment);
+    } catch (error) {
+      res.status(500).json({ error: 'Error updating user info' });
     }
+  }
+
+  // get price guides
+  async getPriceGuides(req, res) {
+    try {
+      const priceGuides = await PriceGuide.findAll({
+        order: [['createdAt', 'DESC']]
+      });
+
+      return res.json({
+        success: true,
+        data: priceGuides
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error fetching price guides',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = new GuestShipmentController();
