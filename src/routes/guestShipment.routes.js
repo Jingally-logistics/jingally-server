@@ -47,6 +47,21 @@ router.post('/', guestShipmentController.createShipment);
 
 /**
  * @swagger
+ * /api/guest-shipments:
+ *   get:
+ *     summary: Get all guest shipments
+ *     tags: [Guest Shipment]
+ *     responses:
+ *       200:
+ *         description: List of guest shipments retrieved successfully
+ *       500:
+ *         description: Server error
+ */
+router.get('/', guestShipmentController.getShipments);
+
+
+/**
+ * @swagger
  * /api/guest-shipments/track/{trackingNumber}:
  *   get:
  *     summary: Track a shipment by tracking number

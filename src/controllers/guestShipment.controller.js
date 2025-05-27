@@ -47,6 +47,38 @@ class GuestShipmentController {
     }
   }
 
+  // Getting shipment
+  async getShipments(req, res){
+    try {
+      const shipments = await GuestShipment.findAll({
+        include: [
+          {
+            model: Driver,
+            as: 'driver',
+            attributes: ['id', 'firstName', 'lastName', 'phone']
+          },
+          {
+            model: Container,
+            as: 'container',
+            attributes: ['containerNumber', 'type', 'capacity', 'location', 'status']
+          }
+        ],
+        order: [['createdAt', 'DESC']]
+      });
+
+      return res.json({
+        success: true,
+        data: shipments
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error fetching shipments',
+        error: error.message
+      });
+    }
+  }
+
   // Get shipment by tracking number
   async trackShipment(req, res) {
     try {
