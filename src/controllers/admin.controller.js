@@ -498,8 +498,8 @@ class AdminController {
         notes
       } = req.body;
 
-      if (!containerNumber.startsWith('JL1/JLC')) {
-        return res.status(400).json({ error: 'Invalid container number. Must start with JL1/JLC' });
+      if (!containerNumber.startsWith('JLC')) {
+        return res.status(400).json({ error: 'Invalid container number. Must start with JLC' });
       }
       // Check if container already exists
       const existingContainer = await Container.findOne({ 

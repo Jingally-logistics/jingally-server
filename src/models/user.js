@@ -16,6 +16,10 @@ const User = sequelize.define('User', {
       isEmail: true
     }
   },
+  jingallyId:{
+    type: DataTypes.STRING,
+    unique: true
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false
@@ -55,6 +59,7 @@ const User = sequelize.define('User', {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
       }
+      user.jingallyId = 'JL' + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
     },
     beforeUpdate: async (user) => {
       if (user.changed('password')) {
