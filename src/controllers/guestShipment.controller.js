@@ -447,6 +447,103 @@ class GuestShipmentController {
       });
     }
   }
+
+  // Assign container to booking
+  async assignContainerToBooking(req, res) {
+    try {
+      const { shipmentId, containerId } = req.body;
+      
+      const shipment = await GuestShipment.findByPk(shipmentId);
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      const container = await Container.findByPk(containerId);
+      if (!container) {
+        return res.status(404).json({
+          success: false,
+          message: 'Container not found'
+        });
+      }
+
+      await shipment.update({ containerId });
+      
+      return res.json({
+        success: true,
+        message: 'Container assigned successfully',
+        data: shipment
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error assigning container',
+        error: error.message
+      });
+    }
+  }
+
+  // Update booking payment
+  async updateBookingPayment(req, res) {
+    try {
+      const { shipmentId, paymentStatus } = req.body;
+      
+      const shipment = await GuestShipment.findByPk(shipmentId);
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      await shipment.update({ 
+        paymentStatus: paymentStatus
+      });
+
+      return res.json({
+        success: true,
+        message: 'Payment updated successfully',
+        data: shipment
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error updating payment',
+        error: error.message
+      });
+    }
+  }
+
+  // Update booking status
+  async updateBookingStatus(req, res) {
+    try {
+      const { shipmentId, status } = req.body;
+      
+      const shipment = await GuestShipment.findByPk(shipmentId);
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      await shipment.update({ status });
+
+      return res.json({
+        success: true,
+        message: 'Status updated successfully',
+        data: shipment
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error updating status',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = new GuestShipmentController();

@@ -331,4 +331,95 @@ router.put('/user-info', guestShipmentController.updateUserInfo);
 router.get('/price-guides', guestShipmentController.getPriceGuides);
 
 
+/**
+ * @swagger
+ * /api/guest-shipments/assign-container:
+ *   post:
+ *     summary: Assign a container to a shipment
+ *     tags: [Guest Shipment]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - shipmentId
+ *               - containerId
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               containerId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Container assigned successfully
+ *       404:
+ *         description: Shipment or container not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/assign-container', guestShipmentController.assignContainerToBooking);
+
+/**
+ * @swagger
+ * /api/guest-shipments/payment:
+ *   put:
+ *     summary: Update shipment payment status
+ *     tags: [Guest Shipment]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - shipmentId
+ *               - paymentStatus
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               paymentStatus:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Payment status updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/payment', guestShipmentController.updateBookingPayment);
+
+/**
+ * @swagger
+ * /api/guest-shipments/status:
+ *   put:
+ *     summary: Update shipment status
+ *     tags: [Guest Shipment]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - shipmentId
+ *               - status
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Status updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/status', guestShipmentController.updateBookingStatus);
+
+
 module.exports = router;
