@@ -149,17 +149,24 @@ class EmailVerificationService {
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Payment Details</h2>
-            <p><strong>Amount:</strong> $${shipment.price || 'N/A'}</p>
+            <p><strong>Amount:</strong> ₦${shipment.price || 'N/A'}</p>
             <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
+            <p><strong>Payment Method:</strong> ${shipment.paymentMethod || 'N/A'}</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
           </div>
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Booking Details</h2>
-            <p><strong>Booking ID:</strong> ${shipment.trackingNumber}</p>
-            <p><strong>Pickup Location:</strong> ${shipment.pickupAddress.street}, ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}, ${shipment.pickupAddress.country}</p>
-            <p><strong>Delivery Location:</strong> ${shipment.deliveryAddress.street}, ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}, ${shipment.deliveryAddress.country}</p>
-            <p><strong>Scheduled Date & Time:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
+            <p><strong>Tracking Number:</strong> ${shipment.trackingNumber}</p>
+            <p><strong>Service Type:</strong> ${shipment.serviceType}</p>
+            <p><strong>Package Type:</strong> ${shipment.packageType}</p>
+            <p><strong>Package Description:</strong> ${shipment.packageDescription}</p>
+            <p><strong>Pickup Location:</strong> ${JSON.parse(shipment.pickupAddress).street}</p>
+            <p><strong>Delivery Location:</strong> ${JSON.parse(shipment.deliveryAddress).street}</p>
+            <p><strong>Receiver Name:</strong> ${shipment.receiverName}</p>
+            <p><strong>Receiver Phone:</strong> ${shipment.receiverPhoneNumber}</p>
+            <p><strong>Scheduled Pickup:</strong> ${new Date(shipment.scheduledPickupTime).toLocaleString()}</p>
+            <p><strong>Estimated Delivery:</strong> ${new Date(shipment.estimatedDeliveryTime).toLocaleString()}</p>
           </div>
 
           <p>Our team is committed to ensuring a seamless and reliable delivery experience for you. Should you have any questions or require assistance, please don't hesitate to contact us at info@jingally.com or reply to this email.</p>
@@ -197,17 +204,24 @@ class EmailVerificationService {
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Payment Details</h2>
-            <p><strong>Amount:</strong> $${shipment.price || 'N/A'}</p>
+            <p><strong>Amount:</strong> ₦${shipment.price || 'N/A'}</p>
             <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
+            <p><strong>Payment Method:</strong> ${shipment.paymentMethod || 'N/A'}</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
           </div>
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Booking Details</h2>
-            <p><strong>Booking ID:</strong> ${shipment.trackingNumber}</p>
-            <p><strong>Pickup Location:</strong> ${shipment.pickupAddress.street}, ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}, ${shipment.pickupAddress.country}</p>
-            <p><strong>Delivery Location:</strong> ${shipment.deliveryAddress.street}, ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}, ${shipment.deliveryAddress.country}</p>
-            <p><strong>Scheduled Date & Time:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
+            <p><strong>Tracking Number:</strong> ${shipment.trackingNumber}</p>
+            <p><strong>Service Type:</strong> ${shipment.serviceType}</p>
+            <p><strong>Package Type:</strong> ${shipment.packageType}</p>
+            <p><strong>Package Description:</strong> ${shipment.packageDescription}</p>
+            <p><strong>Pickup Location:</strong> ${JSON.parse(shipment.pickupAddress).street}</p>
+            <p><strong>Delivery Location:</strong> ${JSON.parse(shipment.deliveryAddress).street}</p>
+            <p><strong>Receiver Name:</strong> ${shipment.receiverName}</p>
+            <p><strong>Receiver Phone:</strong> ${shipment.receiverPhoneNumber}</p>
+            <p><strong>Scheduled Pickup:</strong> ${new Date(shipment.scheduledPickupTime).toLocaleString()}</p>
+            <p><strong>Estimated Delivery:</strong> ${new Date(shipment.estimatedDeliveryTime).toLocaleString()}</p>
           </div>
 
           <p>Our team is committed to ensuring a seamless and reliable delivery experience for you. Should you have any questions or require assistance, please don't hesitate to contact us at info@jingally.com or reply to this email.</p>
@@ -235,37 +249,39 @@ class EmailVerificationService {
     const mailOptions = {
       from: process.env.SMTP_FROM,
       to: adminEmail,
-      subject: 'User Booking Notification',
+      subject: 'New Booking Alert - Action Required',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #333; text-align: center;">User Booking Notification</h1>
+          <h1 style="color: #2c5282; text-align: center;">🆕 New Booking Alert</h1>
           
           <p>Dear Admin,</p>
-          <p>I hope this email finds you well. I'm writing to inform you that a new booking has been successfully processed through Jingally Logistics.</p>
+          <p>A new booking has been submitted and requires your attention.</p>
 
-          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h2 style="color: #444; margin-bottom: 15px;">Payment Information</h2>
-            <p><strong>Amount:</strong> $${shipment.price || 'N/A'}</p>
-            <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
+          <div style="background-color: #ebf8ff; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2c5282;">
+            <h2 style="color: #2c5282; margin-bottom: 15px;">💰 Payment Details</h2>
+            <p><strong>Amount:</strong> ₦${shipment.price || 'N/A'}</p>
+            <p><strong>Status:</strong> <span style="color: ${shipment.paymentStatus === 'paid' ? '#38a169' : '#e53e3e'}">${shipment.paymentStatus || 'N/A'}</span></p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
           </div>
 
-          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
-            <h2 style="color: #444; margin-bottom: 15px;">Booking Details</h2>
-            <p><strong>User Name:</strong> ${user.firstName} ${user.lastName} </p>
-            <p><strong>User Email:</strong> ${user.email} </p>
-            <p><strong>Booking ID:</strong> ${shipment.trackingNumber}</p>
-            <p><strong>Item Booked:</strong> ${shipment.packageDescription || 'N/A'}</p>
-            <p><strong>Pickup Location:</strong> ${shipment.pickupAddress.street}, ${shipment.pickupAddress.city}, ${shipment.pickupAddress.state}, ${shipment.pickupAddress.country}</p>
-            <p><strong>Delivery Location:</strong> ${shipment.deliveryAddress.street}, ${shipment.deliveryAddress.city}, ${shipment.deliveryAddress.state}, ${shipment.deliveryAddress.country}</p>
-            <p><strong>Scheduled Date & Time:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
+          <div style="background-color: #ebf8ff; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2c5282;">
+            <h2 style="color: #2c5282; margin-bottom: 15px;">📦 Booking Information</h2>
+            <p><strong>Customer:</strong> ${user.firstName} ${user.lastName}</p>
+            <p><strong>Contact:</strong> ${user.email}</p>
+            <p><strong>Tracking ID:</strong> ${shipment.trackingNumber}</p>
+            <p><strong>Package:</strong> ${shipment.packageDescription || 'N/A'}</p>
+            <p><strong>Pickup:</strong> ${JSON.parse(shipment.pickupAddress).street}, ${JSON.parse(shipment.pickupAddress).city}</p>
+            <p><strong>Delivery:</strong> ${JSON.parse(shipment.deliveryAddress).street}, ${JSON.parse(shipment.deliveryAddress).city}</p>
+            <p><strong>Pickup Time:</strong> ${new Date(shipment.scheduledPickupTime).toLocaleString()}</p>
           </div>
 
-          <p>Kindly review the booking details and ensure that all arrangements are in place for a smooth execution of the delivery. Should there be any issues or additional requirements, please feel free to reach out.</p>
+          <div style="background-color: #fff5f5; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #e53e3e;">
+            <p style="margin: 0; color: #e53e3e;">⚠️ Please review and process this booking as soon as possible.</p>
+          </div>
 
-          <p>Thank you for your support and dedication to maintaining excellent service standards.</p>
+          <p style="color: #4a5568;">For any questions or issues, please contact the support team.</p>
 
-          <p>Best regards,<br>Jingally Logistic Support Team</p>
+          <p style="margin-top: 30px; color: #4a5568;">Best regards,<br>Jingally Logistics System</p>
         </div>
       `
     };

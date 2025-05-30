@@ -544,6 +544,84 @@ class GuestShipmentController {
       });
     }
   }
+
+  // Get shipment details
+  async getShipmentDetails(req, res) {
+    try {
+      const shipment = await GuestShipment.findOne({
+        where: {
+          id: req.params.id
+        },
+        include: [
+          {
+            model: Driver,
+            as: 'driver',
+            attributes: ['id', 'firstName', 'lastName', 'phone']
+          },
+          {
+            model: Container,
+            as: 'container',
+            attributes: ['containerNumber', 'type', 'capacity', 'location', 'status']
+          }
+        ]
+      });
+
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      return res.json({
+        success: true,
+        data: shipment
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error fetching shipment details',
+        error: error.message
+      });
+    }
+  }
+
+  // Assign driver to booking
+  async assignDriverToBooking(req, res) {
+    try {
+      const { shipmentId, driverId } = req.body;
+
+      const shipment = await GuestShipment.findByPk(shipmentId);
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      const driver = await Driver.findByPk(driverId);
+      if (!driver) {
+        return res.status(404).json({
+          success: false,
+          message: 'Driver not found'
+        });
+      }
+
+      await shipment.update({ driverId });
+
+      return res.json({
+        success: true,
+        message: 'Driver assigned successfully',
+        data: shipment
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error assigning driver',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = new GuestShipmentController();
