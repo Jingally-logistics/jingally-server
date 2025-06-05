@@ -63,7 +63,7 @@ const Address = sequelize.define('Address', {
     }
   },
   type: {
-    type: DataTypes.ENUM('pickup', 'delivery'),
+    type: DataTypes.ENUM('pickup', 'drop-off'),
     allowNull: false,
     defaultValue: 'pickup'
   },
