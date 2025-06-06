@@ -37,6 +37,26 @@ class AddressController {
     }
   }
 
+  // get all addresses
+  async getAllAddresses(req, res) {
+    try {
+      const addresses = await Address.findAll({
+        order: [['createdAt', 'DESC']]
+      });
+
+      res.json({
+        success: true,
+        data: addresses
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Error retrieving all addresses',
+        error: error.message
+      });
+    }
+  }
+  
   // Get all addresses for a user
   async getUserAddresses(req, res) {
     try {

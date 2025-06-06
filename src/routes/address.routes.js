@@ -59,6 +59,52 @@ router.post('/', addressController.createAddress);
 
 /**
  * @swagger
+ * /addresses/all:
+ *   get:
+ *     tags: [Addresses]
+ *     summary: Get all addresses (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all addresses retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   userId:
+ *                     type: string
+ *                   street:
+ *                     type: string
+ *                   city:
+ *                     type: string
+ *                   state:
+ *                     type: string
+ *                   country:
+ *                     type: string
+ *                   zipCode:
+ *                     type: string
+ *                   type:
+ *                     type: string
+ *                   isVerified:
+ *                     type: boolean
+ *       401:
+ *         description: Not authenticated
+ *       403:
+ *         description: Not authorized (admin only)
+ */
+router.get('/all', addressController.getAllAddresses);
+
+
+
+
+/**
+ * @swagger
  * /addresses:
  *   get:
  *     tags: [Addresses]
