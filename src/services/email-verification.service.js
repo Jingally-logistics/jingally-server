@@ -149,7 +149,7 @@ class EmailVerificationService {
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Payment Details</h2>
-            <p><strong>Amount:</strong> ₦${shipment.price || 'N/A'}</p>
+            <p><strong>Amount:</strong> N/A </p>
             <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
             <p><strong>Payment Method:</strong> ${shipment.paymentMethod || 'N/A'}</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
@@ -204,7 +204,7 @@ class EmailVerificationService {
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Payment Details</h2>
-            <p><strong>Amount:</strong> ₦${shipment.price || 'N/A'}</p>
+            <p><strong>Amount:</strong> N/A</p>
             <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
             <p><strong>Payment Method:</strong> ${shipment.paymentMethod || 'N/A'}</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
@@ -259,7 +259,7 @@ class EmailVerificationService {
 
           <div style="background-color: #ebf8ff; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2c5282;">
             <h2 style="color: #2c5282; margin-bottom: 15px;">💰 Payment Details</h2>
-            <p><strong>Amount:</strong> ₦${shipment.price || 'N/A'}</p>
+            <p><strong>Amount:</strong> N/A</p>
             <p><strong>Status:</strong> <span style="color: ${shipment.paymentStatus === 'paid' ? '#38a169' : '#e53e3e'}">${shipment.paymentStatus || 'N/A'}</span></p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
           </div>
