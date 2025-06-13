@@ -3,6 +3,7 @@ const router = express.Router();
 const adminController = require('../controllers/admin.controller');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/upload');
+const shipmentController = require("../controllers/shipment.controller")
 
 /**
  * @swagger
@@ -1234,6 +1235,267 @@ router.put('/price-guide/:id', auth, adminController.editPriceGuide);
  *         description: Server error
  */
 router.delete('/price-guide/:id', auth, adminController.deletePriceGuide);
+
+
+// ====== ADMIN UPDATING SHIPMENTS =======
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/cancel:
+ *   put:
+ *     summary: Cancel a shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shipment cancelled successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/cancel', auth, shipmentController.adminCancelShipment);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}:
+ *   put:
+ *     summary: Edit shipment details
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               serviceType:
+ *                 type: string
+ *               packageType:
+ *                 type: string
+ *               packageDescription:
+ *                 type: string
+ *               fragile:
+ *                 type: boolean
+ *               status:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               paymentStatus:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Shipment updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id', auth, shipmentController.adminEditShipment);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/dimensions:
+ *   put:
+ *     summary: Update shipment package dimensions
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               dimensions:
+ *                 type: string
+ *               weight:
+ *                 type: number
+ *               priceGuides:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Package dimensions updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/dimensions', auth, shipmentController.adminUpdateShipmentPackageDimensionsById);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/photos:
+ *   patch:
+ *     summary: Update shipment photos
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file to upload
+ *     responses:
+ *       200:
+ *         description: Photos updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.patch('/:id/photos', 
+    upload.array('file'), // Use 'file' as the field name
+    shipmentController.adminUpdateShipmentPhotoById
+);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/delivery-address:
+ *   patch:
+ *     tags: [Admin]
+ *     summary: Update shipment delivery address
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - deliveryAddress
+ *               - pickupAddress
+ *               - receiverName
+ *               - receiverPhoneNumber
+ *             properties:
+ *               deliveryAddress:
+ *                 type: object
+ *                 description: Delivery address details
+ *               pickupAddress:
+ *                 type: object
+ *                 description: Pickup address details
+ *               receiverName:
+ *                 type: string
+ *                 description: Name of the receiver
+ *               receiverPhoneNumber:
+ *                 type: string
+ *                 description: Phone number of the receiver
+ *               deliveryType:
+ *                 type: string
+ *                 description: Delivery type (park or home)
+ *     responses:
+ *       200:
+ *         description: Delivery address updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error updating delivery address
+ */
+router.patch('/:id/delivery-address', shipmentController.adminUpdateShipmentDeliveryAddressById);
+
+/**
+ * @swagger
+ * api/admin/shipments/{id}/pickup-date-time:
+ *   patch:
+ *     tags: [Admin]
+ *     summary: Update shipment pickup date and time
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - scheduledPickupTime
+ *             properties:
+ *               scheduledPickupTime:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Scheduled pickup date and time
+ *     responses:
+ *       200:
+ *         description: Shipment pickup date and time updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:    
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                 message:
+ *                   type: string   
+ *       401:
+ *         description: Not authenticated
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error updating pickup date and time
+ */
+router.patch('/:id/pickup-date-time', shipmentController.adminUpdateShipmentPickupDateTimeById);
 
 
 module.exports = router;
