@@ -12,7 +12,7 @@ const GuestShipment = sequelize.define('GuestShipment', {
     allowNull: true
   },
   status: {
-    type: DataTypes.ENUM('pending', 'picked_up', 'in_transit', 'delivered', 'cancelled'),
+    type: DataTypes.ENUM('pending', 'booked', 'picked_up', 'in_transit', 'delivered', 'cancelled'),
     defaultValue: 'pending'
   },
   packageType: {

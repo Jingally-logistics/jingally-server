@@ -191,6 +191,31 @@ class EmailVerificationService {
 
   // Send payment confirmation email
   async sendPaymentConfirmationEmail(user, shipment) {
+    // Helper to safely parse address and get a field, fallback to empty string if not available
+    function getAddressField(address, field) {
+      try {
+        const obj = typeof address === 'string' ? JSON.parse(address) : address;
+        return obj && obj[field] ? obj[field] : '';
+      } catch {
+        return '';
+      }
+    }
+
+    // Determine delivery method and pickup/dropoff label/location
+    let deliveryMethod = '';
+    let pickupOrDropoffLabel = '';
+    let pickupOrDropoffLocation = '';
+    if (shipment.deliveryType && shipment.deliveryType.toLowerCase() === 'pickup') {
+      deliveryMethod = 'Home Pickup';
+      pickupOrDropoffLabel = 'Scheduled Pickup';
+      pickupOrDropoffLocation = getAddressField(shipment.pickupAddress, 'street');
+    } else {
+      deliveryMethod = 'Drop off at warehouse';
+      pickupOrDropoffLabel = 'Scheduled Drop Off';
+      pickupOrDropoffLocation = getAddressField(shipment.pickupAddress, 'street');
+    }
+
+    // Compose the email
     const mailOptions = {
       from: process.env.SMTP_FROM,
       to: user.email,
@@ -199,29 +224,30 @@ class EmailVerificationService {
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <h1 style="color: #333; text-align: center;">Payment Confirmation</h1>
           
-          <p>Dear ${user.firstName},</p>
-          <p>Thank you for choosing Jingally Logistic! We're excited to confirm that your payment has been successfully processed.</p>
+          <p>Dear ${user.firstName || 'Customer'},</p>
+          <p>Thank you for choosing Jingally Logistic! We're excited to confirm that your booking has been successfully processed.</p>
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Payment Details</h2>
             <p><strong>Amount:</strong> N/A</p>
-            <p><strong>Status:</strong> ${shipment.paymentStatus || 'N/A'}</p>
-            <p><strong>Payment Method:</strong> ${shipment.paymentMethod || 'N/A'}</p>
+            <p><strong>Status:</strong> ${shipment.paymentStatus ? shipment.paymentStatus : 'pending'}</p>
+            <p><strong>Payment Status:</strong> not verified</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
           </div>
 
           <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #444; margin-bottom: 15px;">Booking Details</h2>
-            <p><strong>Tracking Number:</strong> ${shipment.trackingNumber}</p>
-            <p><strong>Service Type:</strong> ${shipment.serviceType}</p>
-            <p><strong>Package Type:</strong> ${shipment.packageType}</p>
-            <p><strong>Package Description:</strong> ${shipment.packageDescription}</p>
-            <p><strong>Pickup Location:</strong> ${JSON.parse(shipment.pickupAddress).street}</p>
-            <p><strong>Delivery Location:</strong> ${JSON.parse(shipment.deliveryAddress).street}</p>
-            <p><strong>Receiver Name:</strong> ${shipment.receiverName}</p>
-            <p><strong>Receiver Phone:</strong> ${shipment.receiverPhoneNumber}</p>
-            <p><strong>Scheduled Pickup:</strong> ${new Date(shipment.scheduledPickupTime).toLocaleString()}</p>
-            <p><strong>Estimated Delivery:</strong> ${new Date(shipment.estimatedDeliveryTime).toLocaleString()}</p>
+            <p><strong>Tracking Number:</strong> ${shipment.trackingNumber || 'N/A'}</p>
+            <p><strong>Service Type:</strong> ${shipment.serviceType || 'N/A'}</p>
+            <p><strong>Package Type:</strong> ${shipment.packageType || 'N/A'}</p>
+            <p><strong>Package Description:</strong> ${shipment.packageDescription || 'N/A'}</p>
+            <p><strong>Delivery Method:</strong> ${deliveryMethod}</p>
+            <p><strong>${pickupOrDropoffLabel}:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
+            <p><strong>${deliveryMethod === 'Home Pickup' ? 'Pickup Location' : 'Drop Off Location'}:</strong> ${pickupOrDropoffLocation}</p>
+            <p><strong>Delivery Location:</strong> ${getAddressField(shipment.deliveryAddress, 'street')}</p>
+            <p><strong>Receiver Name:</strong> ${shipment.receiverName || 'N/A'}</p>
+            <p><strong>Receiver Phone:</strong> ${shipment.receiverPhoneNumber || 'N/A'}</p>
+            <p><strong>Estimated Delivery:</strong> ${shipment.estimatedDeliveryTime ? new Date(shipment.estimatedDeliveryTime).toLocaleString() : 'N/A'}</p>
           </div>
 
           <p>Our team is committed to ensuring a seamless and reliable delivery experience for you. Should you have any questions or require assistance, please don't hesitate to contact us at info@jingally.com or reply to this email.</p>

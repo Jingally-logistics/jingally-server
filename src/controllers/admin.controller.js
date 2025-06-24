@@ -895,7 +895,8 @@ class AdminController {
       await shipment.update({ 
         paymentStatus: req.body.paymentStatus, 
         price: req.body.amount,
-        paymentMethod: req.body.method
+        paymentMethod: req.body.method,
+        status: 'booked'
       });   
 
       // Send payment confirmation email to the user

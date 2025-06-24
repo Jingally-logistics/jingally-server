@@ -16,7 +16,7 @@ const Shipment = sequelize.define('Shipment', {
     }
   },
   status: {
-    type: DataTypes.ENUM('pending', 'picked_up', 'in_transit', 'delivered', 'cancelled'),
+    type: DataTypes.ENUM('pending','booked', 'picked_up', 'in_transit', 'delivered', 'cancelled'),
     defaultValue: 'pending'
   },
   packageType: {
