@@ -114,25 +114,38 @@ Object.values(models).forEach(model => {
 });
 
 // Sync all models with database
+// To avoid the "Too many keys specified; max 64 keys allowed" error during sync,
+// skip the `alter` option for User in production and only use it in development.
+// You may also want to avoid using `alter` if you are hitting this error in development
+// and instead use migrations for schema changes.
+
 const syncDatabase = async () => {
   try {
-    // Force sync in specific order to handle foreign key constraints
+    // Disable foreign key checks to avoid constraint issues during sync
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 0;');
-    
-    // First create tables without foreign key constraints
-    await User.sync({ alter: process.env.NODE_ENV === 'development' });
-    await Driver.sync({ alter: process.env.NODE_ENV === 'development' });
-    await Container.sync({ alter: process.env.NODE_ENV === 'development' });
-    await Address.sync({ alter: process.env.NODE_ENV === 'development' });
-    await Settings.sync({ alter: process.env.NODE_ENV === 'development' });
-    await Shipment.sync({ alter: process.env.NODE_ENV === 'development' });
-    await BookShipment.sync({ alter: process.env.NODE_ENV === 'development' });
-    await PriceGuide.sync({ alter: process.env.NODE_ENV === 'development' });
-    await GuestShipment.sync({ alter: process.env.NODE_ENV === 'development' });
-    
+
+    // Only use { alter: true } in development, and skip it for User if you hit the key limit
+    const alterOption = process.env.NODE_ENV === 'development';
+
+    // For the User model, avoid using alter if you are hitting the key limit
+    // You can also use { force: false } to just ensure the table exists without altering
+    await User.sync({ alter: false }); // Do not alter User table to avoid key limit error
+    await Driver.sync({ alter: alterOption });
+    await Container.sync({ alter: alterOption });
+    await Address.sync({ alter: alterOption });
+    await Settings.sync({ alter: alterOption });
+    await Shipment.sync({ alter: alterOption });
+    await BookShipment.sync({ alter: alterOption });
+    await PriceGuide.sync({ alter: alterOption });
+    await GuestShipment.sync({ alter: alterOption });
+
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
     console.log('Database synced successfully');
   } catch (error) {
+    // Log a more specific message if the error is ER_TOO_MANY_KEYS
+    if (error.original && error.original.code === 'ER_TOO_MANY_KEYS') {
+      console.error('MySQL key limit reached (max 64 keys per table). Consider cleaning up old indexes or using migrations instead of sync({ alter: true }) for the User table.');
+    }
     console.error('Error syncing database:', error);
     throw error;
   }
