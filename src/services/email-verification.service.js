@@ -250,7 +250,9 @@ class EmailVerificationService {
             <p><strong>Estimated Delivery:</strong> ${shipment.estimatedDeliveryTime ? new Date(shipment.estimatedDeliveryTime).toLocaleString() : 'N/A'}</p>
           </div>
 
-          <p>Our team is committed to ensuring a seamless and reliable delivery experience for you. Should you have any questions or require assistance, please don't hesitate to contact us at info@jingally.com or reply to this email.</p>
+          <p>Our team will reach out within 6 to 24 hours to confirm your booking.</p>
+
+          <p>We are committed to ensuring a seamless and reliable delivery experience for you. Should you have any questions or require assistance, please don't hesitate to contact us at info@jingally.com or reply to this email.</p>
 
           <p>Stay connected with us via our app for live updates on your booking status.</p>
 
