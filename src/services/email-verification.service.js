@@ -285,7 +285,7 @@ class EmailVerificationService {
 
           <div style="background-color: #ebf8ff; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2c5282;">
             <h2 style="color: #2c5282; margin-bottom: 15px;">Payment Details</h2>
-            <p><strong>Amount:</strong> ${shipment.price ? `₦${shipment.price}` : 'N/A'}</p>
+            <p><strong>Amount:</strong> ${shipment.price ? `£${shipment.price} for service charge` : 'N/A'}</p>
             <p><strong>Status:</strong> ${shipment.paymentStatus || 'Pending'}</p>
             <p><strong>Payment Status:</strong> ${shipment.paymentStatus === 'paid' ? 'Verified' : 'Not Verified'}</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
