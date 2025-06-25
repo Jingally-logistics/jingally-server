@@ -322,9 +322,14 @@ class GuestShipmentController {
 
       // Send admin notification
       await emailVerificationService.sendAdminBookingNotification(
-        'msheliapromise@gmail.com',  // admin email
-        shipment.userInfo,           // user info from shipment
-        shipment                     // shipment object
+        'jingallylogistics@gmail.com',  // admin email
+        shipment.userInfo,                // user object
+        shipment              // shipment object
+      );
+      await emailVerificationService.sendAdminBookingNotification(
+        'ayenifolami36@gmail.com',  // admin email
+        shipment.userInfo,                // user object
+        shipment              // shipment object
       );
 
       return res.json({

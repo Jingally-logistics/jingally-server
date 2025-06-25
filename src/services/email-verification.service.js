@@ -205,7 +205,7 @@ class EmailVerificationService {
     let deliveryMethod = '';
     let pickupOrDropoffLabel = '';
     let pickupOrDropoffLocation = '';
-    if (shipment.deliveryType && shipment.deliveryType.toLowerCase() === 'pickup') {
+    if (shipment.deliveryType && shipment.deliveryType.toLowerCase() === 'home') {
       deliveryMethod = 'Home Pickup';
       pickupOrDropoffLabel = 'Scheduled Pickup';
       pickupOrDropoffLocation = getAddressField(shipment.pickupAddress, 'street');
@@ -243,7 +243,7 @@ class EmailVerificationService {
             <p><strong>Package Description:</strong> ${shipment.packageDescription || 'N/A'}</p>
             <p><strong>Delivery Method:</strong> ${deliveryMethod}</p>
             <p><strong>${pickupOrDropoffLabel}:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
-            <p><strong>${deliveryMethod === 'Home Pickup' ? 'Pickup Location' : 'Drop Off Location'}:</strong> ${pickupOrDropoffLocation}</p>
+            <p><strong>${deliveryMethod === 'home' ? 'Pickup Location' : 'Drop Off Location'}:</strong> ${pickupOrDropoffLocation}</p>
             <p><strong>Delivery Location:</strong> ${getAddressField(shipment.deliveryAddress, 'street')}</p>
             <p><strong>Receiver Name:</strong> ${shipment.receiverName || 'N/A'}</p>
             <p><strong>Receiver Phone:</strong> ${shipment.receiverPhoneNumber || 'N/A'}</p>
@@ -284,21 +284,31 @@ class EmailVerificationService {
           <p>A new booking has been submitted and requires your attention.</p>
 
           <div style="background-color: #ebf8ff; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2c5282;">
-            <h2 style="color: #2c5282; margin-bottom: 15px;">💰 Payment Details</h2>
-            <p><strong>Amount:</strong> N/A</p>
-            <p><strong>Status:</strong> <span style="color: ${shipment.paymentStatus === 'paid' ? '#38a169' : '#e53e3e'}">${shipment.paymentStatus || 'N/A'}</span></p>
+            <h2 style="color: #2c5282; margin-bottom: 15px;">Payment Details</h2>
+            <p><strong>Amount:</strong> ${shipment.price ? `₦${shipment.price}` : 'N/A'}</p>
+            <p><strong>Status:</strong> ${shipment.paymentStatus || 'Pending'}</p>
+            <p><strong>Payment Status:</strong> ${shipment.paymentStatus === 'paid' ? 'Verified' : 'Not Verified'}</p>
             <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
           </div>
 
           <div style="background-color: #ebf8ff; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #2c5282;">
-            <h2 style="color: #2c5282; margin-bottom: 15px;">📦 Booking Information</h2>
-            <p><strong>Customer:</strong> ${user.firstName} ${user.lastName}</p>
-            <p><strong>Contact:</strong> ${user.email}</p>
-            <p><strong>Tracking ID:</strong> ${shipment.trackingNumber}</p>
-            <p><strong>Package:</strong> ${shipment.packageDescription || 'N/A'}</p>
-            <p><strong>Pickup:</strong> ${JSON.parse(shipment.pickupAddress).street}, ${JSON.parse(shipment.pickupAddress).city}</p>
-            <p><strong>Delivery:</strong> ${JSON.parse(shipment.deliveryAddress).street}, ${JSON.parse(shipment.deliveryAddress).city}</p>
-            <p><strong>Pickup Time:</strong> ${new Date(shipment.scheduledPickupTime).toLocaleString()}</p>
+            <h2 style="color: #2c5282; margin-bottom: 15px;">Booking Details</h2>
+            <p><strong>Tracking Number:</strong> ${shipment.trackingNumber || 'N/A'}</p>
+            <p><strong>Service Type:</strong> ${shipment.serviceType || 'N/A'}</p>
+            <p><strong>Package Type:</strong> ${shipment.packageType || 'N/A'}</p>
+            <p><strong>Package Description:</strong> ${shipment.packageDescription || 'N/A'}</p>
+            <p><strong>Delivery Method:</strong> ${shipment.deliveryType || 'N/A'}</p>
+
+            ${shipment.deliveryType === 'home' ? 
+              `<p><strong>Pickup Location:</strong> ${JSON.parse(shipment.pickupAddress).street}, ${JSON.parse(shipment.pickupAddress).city}</p>` :
+              `<p><strong>Drop-off Location:</strong> ${JSON.parse(shipment.pickupAddress).street}, ${JSON.parse(shipment.pickupAddress).city}</p>`
+            }
+
+            <p><strong>Delivery Location:</strong> ${JSON.parse(shipment.deliveryAddress).street}, ${JSON.parse(shipment.deliveryAddress).city}</p>
+            <p><strong>Receiver Name:</strong> ${shipment.receiverName || 'N/A'}</p>
+            <p><strong>Receiver Phone:</strong> ${shipment.receiverPhoneNumber || 'N/A'}</p>
+            <p><strong>${shipment.deliveryType === 'home' ? 'Scheduled Pickup' : 'Scheduled Drop-off'}:</strong> ${shipment.scheduledPickupTime ? new Date(shipment.scheduledPickupTime).toLocaleString() : 'N/A'}</p>
+            <p><strong>Estimated Delivery:</strong> ${shipment.estimatedDeliveryTime ? new Date(shipment.estimatedDeliveryTime).toLocaleString() : 'N/A'}</p>
           </div>
 
           <div style="background-color: #fff5f5; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #e53e3e;">
