@@ -940,12 +940,12 @@ class AdminController {
       }
 
       await emailVerificationService.sendAdminBookingNotification(
-        'jingallylogistics@gmail.com',  // admin email
+        'peterglo2200@gmail.com',  // admin email
         req.user,                  // user object
         shipment              // shipment object
       );
       await emailVerificationService.sendAdminBookingNotification(
-        'ayenifolami36@gmail.com',  // admin email
+        'msheliapromise@gmail.com',  // admin email
         req.user,                  // user object
         shipment              // shipment object
       );
