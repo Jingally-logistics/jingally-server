@@ -340,6 +340,25 @@ class AdminController {
         }
     }
 
+    // Delete shipments 
+    async deleteShipment(req, res) {
+      if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+        return res.status(403).json({ error: 'Unauthorized' });
+      }
+      try {
+        const { shipmentId } = req.body;
+        const shipment = await Shipment.findByPk(shipmentId);
+        if (!shipment) {
+          return res.status(404).json({ error: 'Shipment not found' });
+        }
+
+        await shipment.destroy();
+        res.json({ message: 'Shipment deleted successfully' });
+      } catch (error) {
+        res.status(500).json({ error: 'Error deleting shipment' });
+      }
+    }
+
   // Get all addresses
   async getAllAddresses(req, res) {
     if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
@@ -1169,6 +1188,25 @@ async updateUserInfo(req, res) {
     res.json(shipment);
   } catch (error) {
     res.status(500).json({ error: 'Error updating user info' });
+  }
+}
+
+// Delete booking 
+async deleteBooking(req, res) {
+  if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+    return res.status(403).json({ error: 'Unauthorized' });
+  }
+  try {
+    const { shipmentId } = req.body;
+    const shipment = await BookShipment.findByPk(shipmentId);
+    if (!shipment) {
+      return res.status(404).json({ error: 'Shipment not found' });
+    }
+
+    await shipment.destroy();
+    res.json({ message: 'Booking deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error deleting booking' });
   }
 }
 

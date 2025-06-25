@@ -368,6 +368,36 @@ router.post('/shipments/assign-driver', auth, adminController.assignDriverToShip
  */
 router.post('/shipments/assign-container', auth, adminController.assignContainerToShipment);
 
+/**
+ * @swagger
+ * /api/admin/shipments:
+ *   post:
+ *     summary: Delete a shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Shipment deleted successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error deleting shipment
+ */
+router.post('/shipments', auth, adminController.deleteShipment);
+
+
 
 
 
@@ -633,6 +663,7 @@ router.put('/containers/:id', auth, adminController.updateContainer);
  *         description: Server error
  */
 router.delete('/containers/:id', auth, adminController.deleteContainer);
+
 
 // ====== SHIPMENT BOOKINGS CONTROLLER ======
 
@@ -1115,6 +1146,36 @@ router.put('/booking/shipments/payment-status', auth, adminController.updateBook
  *         description: Server error
  */
 router.put('/booking/shipments/user-info', auth, adminController.updateUserInfo);
+
+/**
+ * @swagger
+ * /api/admin/booking/shipments:
+ *   post:
+ *     summary: Delete a booking shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Booking deleted successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/booking/shipments', auth, adminController.deleteBooking);
+
 
 
 // ====== PRICE GUIDE CONTROLLER ======
