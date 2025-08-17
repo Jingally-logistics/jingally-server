@@ -628,6 +628,42 @@ class GuestShipmentController {
       });
     }
   }
+
+   // updating shipment booking amount
+   async updateShipmentAmount(req, res) {
+    try {
+      const shipment = await GuestShipment.findOne({
+        where: { id: req.params.id },
+      });
+
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      await shipment.update({ price: req.body.price });
+
+      await emailVerificationService.sendBookingAmountUpdateEmail(
+        shipment.userInfo,
+        shipment
+      );
+
+      return res.json({
+        success: true,
+        data: shipment,
+        message: 'Shipment amount updated successfully'
+      });
+    }
+    catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error updating shipment amount',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = new GuestShipmentController();

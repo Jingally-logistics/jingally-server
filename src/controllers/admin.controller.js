@@ -359,6 +359,46 @@ class AdminController {
       }
     }
 
+    // updating shipment booking amount
+    async updateShipmentAmount(req, res) {
+      try {
+        const shipment = await Shipment.findOne({
+          where: { id: req.params.id },
+          include: [{
+            model: User,
+            as: 'user'
+          }]
+        });
+
+        if (!shipment) {
+          return res.status(404).json({
+            success: false,
+            message: 'Shipment not found'
+          });
+        }
+
+        await shipment.update({ price: req.body.price });
+
+        await emailVerificationService.sendBookingAmountUpdateEmail(
+          shipment.user,
+          shipment
+        );
+
+        return res.json({
+          success: true,
+          data: shipment,
+          message: 'Shipment amount updated successfully'
+        });
+      }
+      catch (error) {
+        return res.status(500).json({
+          success: false,
+          message: 'Error updating shipment amount',
+          error: error.message
+        });
+      }
+    }
+
   // Get all addresses
   async getAllAddresses(req, res) {
     if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
@@ -960,6 +1000,42 @@ class AdminController {
       return res.status(500).json({
         success: false,
         message: 'Error updating shipment payment status',
+        error: error.message
+      });
+    }
+  }
+
+  // updating shipment booking amount
+  async updateShipmentBookingAmount(req, res) {
+    try {
+      const shipment = await BookShipment.findOne({
+        where: { id: req.params.id, adminId: req.user.id }
+      });
+
+      if (!shipment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Shipment not found'
+        });
+      }
+
+      await shipment.update({ price: req.body.price });
+
+      await emailVerificationService.sendBookingAmountUpdateEmail(
+        shipment.userInfo,
+        shipment
+      );
+
+      return res.json({
+        success: true,
+        data: shipment,
+        message: 'Shipment booking amount updated successfully'
+      });
+    }
+    catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error updating shipment booking amount',
         error: error.message
       });
     }

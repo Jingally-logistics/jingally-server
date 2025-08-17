@@ -1558,5 +1558,70 @@ router.patch('/:id/delivery-address', shipmentController.adminUpdateShipmentDeli
  */
 router.patch('/:id/pickup-date-time', shipmentController.adminUpdateShipmentPickupDateTimeById);
 
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/amount:
+ *   put:
+ *     summary: Update shipment booking amount
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []   
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               price:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Shipment amount updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/shipments/:id/amount', auth, adminController.updateShipmentAmount);
+
+/**
+ * @swagger
+ * /api/admin/shipments/{id}/amount:
+ *   put:
+ *     summary: Update shipment booking amount
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []   
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               price:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Shipment amount updated successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/booking/shipments/:id/amount', auth, adminController.updateShipmentBookingAmount);
 
 module.exports = router;

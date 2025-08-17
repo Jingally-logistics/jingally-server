@@ -272,6 +272,30 @@ class EmailVerificationService {
     }
   }
 
+  // Send booking amount update email
+  async sendBookingAmountUpdateEmail(user, shipment) {
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: user.email,
+      subject: 'Booking Amount Update',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #333; text-align: center;">Booking Amount Update</h1>
+          <p>Dear ${user.firstName},</p>
+          <p>The booking amount has been updated to ${shipment.price}.</p>
+        </div>
+      `
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error('Error sending booking amount update email:', error);
+      return false;
+    }
+  }
+
   // Send admin notification for new booking
   async sendAdminBookingNotification(adminEmail, user, shipment) {
     const mailOptions = {
