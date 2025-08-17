@@ -80,7 +80,7 @@ class ShipmentController {
       const shipment = await Shipment.findOne({
         where: {
           id: req.params.id,
-          userId: req.user.id 
+          // userId: req.user.id 
         },
         include: [
           {
@@ -835,6 +835,7 @@ class ShipmentController {
       });
     }
   }
+  
 }
 
 module.exports = new ShipmentController();

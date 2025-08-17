@@ -1,5 +1,5 @@
 const { ValidationError, Op } = require('sequelize');
-const { User, Shipment, Address, Settings, Driver, Container, BookShipment, PriceGuide } = require('../models');
+const { User, Shipment, Address, Settings, Driver, Container, BookShipment, PriceGuide, GuestShipment } = require('../models');
 const emailVerificationService = require('../services/email-verification.service');
 
 const cloudinary = require('cloudinary').v2;
@@ -1378,6 +1378,64 @@ async deleteBooking(req, res) {
     }
   }
   
+  //  ========= INVOICE CONTROLLER =========
+  async sendShipmentInvoice(req, res) {
+    try {
+      const { shipmentId } = req.body;
+      const shipment = await Shipment.findOne({
+        where: { id: shipmentId },
+        include: [{ model: User, as: 'user' }]
+      });
+      if (!shipment) {
+        return res.status(404).json({ error: 'Shipment not found' });
+      }
+      await emailVerificationService.sendInvoiceNotification(shipment.user, shipment);
+      return res.json({
+        message: 'Shipment invoice sent successfully'
+      });
+    }
+    catch (error) {
+      return res.status(500).json({ error: 'Error sending shipment invoice' });
+    }
+  }
+
+  async sendBookingInvoice(req, res) {
+    try {
+      const { shipmentId } = req.body;
+      const shipment = await BookShipment.findOne({
+        where: { id: shipmentId }
+      });
+      if (!shipment) {
+        return res.status(404).json({ error: 'Booking not found' });
+      }
+      await emailVerificationService.sendInvoiceNotification(shipment.userInfo, shipment);
+      return res.json({
+        message: 'Shipment invoice sent successfully'
+      });
+    }
+    catch (error) {
+      return res.status(500).json({ error: 'Error sending shipment invoice' });
+    }
+  }
+
+  async sendGuestShipmentInvoice(req, res) {
+    try {
+      const { shipmentId } = req.body;
+      const shipment = await GuestShipment.findOne({
+        where: { id: shipmentId },
+      });
+      if (!shipment) {
+        return res.status(404).json({ error: 'Shipment not found' });
+      }
+      await emailVerificationService.sendInvoiceNotification(shipment.userInfo, shipment);
+      return res.json({
+        message: 'Shipment invoice sent successfully'
+      });
+    }
+    catch (error) {
+      return res.status(500).json({ error: 'Error sending shipment invoice' });
+    }
+  }
 }
 
 module.exports = new AdminController();

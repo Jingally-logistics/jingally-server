@@ -450,6 +450,86 @@ router.post('/shipments/assign-container', auth, adminController.assignContainer
 router.post('/shipments', auth, adminController.deleteShipment);
 
 
+/**
+ * @swagger
+ * /api/admin/shipments/send-invoice:
+ *   post:
+ *     summary: Send invoice for a registered user shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Shipment invoice sent successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error sending shipment invoice
+ */
+router.post('/shipments/send-invoice', auth, adminController.sendShipmentInvoice);
+
+/**
+ * @swagger
+ * /api/admin/bookings/send-invoice:
+ *   post:
+ *     summary: Send invoice for a booking (BookShipment)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Shipment invoice sent successfully
+ *       404:
+ *         description: Booking not found
+ *       500:
+ *         description: Error sending shipment invoice
+ */
+router.post('/bookings/send-invoice', auth, adminController.sendBookingInvoice);
+
+/**
+ * @swagger
+ * /api/admin/guest-shipments/send-invoice:
+ *   post:
+ *     summary: Send invoice for a guest shipment
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               shipmentId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Shipment invoice sent successfully
+ *       404:
+ *         description: Shipment not found
+ *       500:
+ *         description: Error sending shipment invoice
+ */
+router.post('/guest-shipments/send-invoice', auth, adminController.sendGuestShipmentInvoice);
 
 
 

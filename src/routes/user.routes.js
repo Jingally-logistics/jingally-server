@@ -2,6 +2,7 @@ const express = require('express');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
+const { Shipment, BookShipment, GuestShipment } = require('../models');
 const router = express.Router();
 
 /**
@@ -306,4 +307,126 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /users/shipment-info:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get shipment information
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shipment information retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: uuid
+ *                     driver:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           format: uuid
+ *                         firstName:
+ *                           type: string
+ *                         lastName:
+ *                           type: string
+ *                         phone:
+ *                           type: string
+ *                     container:
+ *                       type: object
+ *                       properties:
+ *                         containerNumber:
+ *                           type: string
+ *                         type:
+ *                           type: string
+ *                         capacity:
+ *                           type: number
+ *                         location:
+ *                           type: string
+ *                         status:
+ *                           type: string
+ *       404:
+ *         description: Shipment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.get('/shipment-info/:id', async(req, res)=>{
+  try {
+    let foundShipment = null;
+
+    // Try to find in Shipment
+    foundShipment = await Shipment.findOne({
+      where: { id: req.params.id },
+      include: [
+        {
+          model: Driver,
+          as: 'driver',
+          attributes: ['id', 'firstName', 'lastName', 'phone']
+        },
+        {
+          model: Container,
+          as: 'container',
+          attributes: ['containerNumber','type','capacity','location','status']
+        }
+      ]
+    });
+
+    // If not found, try ManualShipment
+    if (!foundShipment && typeof BookShipment !== 'undefined') {
+      foundShipment = await BookShipment.findOne({
+        where: { id: req.params.id }
+      });
+    }
+
+    // If still not found, try GuestShipment
+    if (!foundShipment && typeof GuestShipment !== 'undefined') {
+      foundShipment = await GuestShipment.findOne({
+        where: { id: req.params.id }
+      });
+    }
+
+    if (!foundShipment) {
+      return res.status(404).json({
+        success: false,
+        message: 'Shipment not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: foundShipment
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error retrieving shipment',
+      error: error.message
+    });
+  }
+});
 module.exports = router;

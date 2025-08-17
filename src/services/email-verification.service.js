@@ -445,6 +445,45 @@ class EmailVerificationService {
       return false;
     }
   }
+
+  // Send notification email to users when admin sends them an invoice
+  async sendInvoiceNotification(user, shipment) {
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || '"Jingally Logistics" <no-reply@jingally.com>',
+      to: user.email,
+      subject: 'Your Invoice from Jingally Logistics',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+            <h2 style="color: #444;">Invoice Notification</h2>
+            <p>Dear ${user.firstName || user.name || 'Customer'},</p>
+            <p>We have generated a new invoice for your recent shipment or service request.</p>
+            <div style="margin: 20px 0;">
+              <h3 style="color: #555;">Invoice Details</h3>
+              <p><strong>Invoice Number:</strong> ${shipment.id || 'N/A'}</p>
+              <p><strong>Amount:</strong> $${shipment.price ? shipment.price.toFixed(2) : 'N/A'}</p>
+              <p><strong>Date Issued:</strong> ${shipment.createdAt ? new Date(shipment.createdAt).toLocaleDateString() : 'N/A'}</p>
+            </div>
+            <div style="margin: 20px 0;">
+              <a href="https://app.jingally.com/invoice/${shipment.id || '#'}" style="background: #007bff; color: #fff; padding: 10px 20px; border-radius: 4px; text-decoration: none;">View Invoice</a>
+            </div>
+            <p style="color: #666;">If you have any questions or need assistance, please contact our support team.</p>
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+              <p style="color: #666;">Best regards,<br>Jingally Logistic Support Team</p>
+            </div>
+          </div>
+        </div>
+      `
+    };
+
+    try {
+      await this.transporter.sendMail(mailOptions);
+      return true;
+    } catch (error) {
+      console.error('Error sending invoice notification email:', error);
+      return false;
+    }
+  }
 }
 
 module.exports = new EmailVerificationService();
