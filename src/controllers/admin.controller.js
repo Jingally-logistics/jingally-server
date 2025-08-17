@@ -91,6 +91,42 @@ class AdminController {
     }
   }
 
+  // delete driver
+  async deleteDriver(req, res) {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const driver = await Driver.findByPk(req.params.id);
+      if (!driver) {
+        return res.status(404).json({ error: 'Driver not found' });
+      }
+      await driver.destroy();
+      res.json({ message: 'Driver deleted successfully' });
+    }
+    catch (error) {
+      res.status(500).json({ error: 'Error deleting driver' });
+    }
+  }
+
+  // delete user
+  async deleteUser(req, res) {
+    if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+    try {
+      const user = await User.findByPk(req.params.id);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      await user.destroy();
+      res.json({ message: 'User deleted successfully' });
+    }
+    catch (error) {
+      res.status(500).json({ error: 'Error deleting user' });
+    }
+  }
+
   // Get user by ID
   async getUserById(req, res) {
     if (req.user.role !== 'admin' && req.user.role !== 'super_admin') {

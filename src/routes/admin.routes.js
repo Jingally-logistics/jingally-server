@@ -44,6 +44,58 @@ router.get('/users', auth, adminController.getAllUsers);
  */
 router.get('/drivers', auth, adminController.getAllDrivers);
 
+/**
+ * @swagger
+ * /api/admin/users/{id}:
+ *   delete:
+ *     summary: Delete a user by ID
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error deleting user
+ */
+router.delete('/users/:id', auth, adminController.deleteUser);
+
+/**
+ * @swagger
+ * /api/admin/drivers/{id}:
+ *   delete:
+ *     summary: Delete a driver by ID
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Driver deleted successfully
+ *       403:
+ *         description: Unauthorized
+ *       404:
+ *         description: Driver not found
+ *       500:
+ *         description: Error deleting driver
+ */
+router.delete('/drivers/:id', auth, adminController.deleteDriver);
+
 
 /**
  * @swagger
