@@ -449,7 +449,7 @@ class EmailVerificationService {
   // Send notification email to users when admin sends them an invoice
   async sendInvoiceNotification(user, shipment) {
     const mailOptions = {
-      from: process.env.EMAIL_FROM || '"Jingally Logistics" <no-reply@jingally.com>',
+      from: process.env.EMAIL_FROM,
       to: user.email,
       subject: 'Your Invoice from Jingally Logistics',
       html: `

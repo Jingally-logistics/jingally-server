@@ -1395,7 +1395,7 @@ async deleteBooking(req, res) {
       });
     }
     catch (error) {
-      return res.status(500).json({ error: 'Error sending shipment invoice' });
+      return res.status(500).json({ error: 'Error sending shipment invoice', errorMsg: error });
     }
   }
 
@@ -1414,7 +1414,7 @@ async deleteBooking(req, res) {
       });
     }
     catch (error) {
-      return res.status(500).json({ error: 'Error sending shipment invoice' });
+      return res.status(500).json({ error: 'Error sending shipment invoice', errorMsg: error });
     }
   }
 
@@ -1433,7 +1433,7 @@ async deleteBooking(req, res) {
       });
     }
     catch (error) {
-      return res.status(500).json({ error: 'Error sending shipment invoice' });
+      return res.status(500).json({ error: 'Error sending shipment invoice', errorMsg: error });
     }
   }
 }
