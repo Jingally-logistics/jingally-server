@@ -1389,12 +1389,14 @@ async deleteBooking(req, res) {
       if (!shipment) {
         return res.status(404).json({ error: 'Shipment not found' });
       }
-      await emailVerificationService.sendInvoiceNotification(shipment.user, shipment);
+      const newMail = await emailVerificationService.sendInvoiceNotification(shipment.user, shipment);
+      console.log(newMail)
       return res.json({
         message: 'Shipment invoice sent successfully'
       });
     }
     catch (error) {
+      console.log(error)
       return res.status(500).json({ error: 'Error sending shipment invoice', errorMsg: error });
     }
   }
@@ -1408,12 +1410,14 @@ async deleteBooking(req, res) {
       if (!shipment) {
         return res.status(404).json({ error: 'Booking not found' });
       }
-      await emailVerificationService.sendInvoiceNotification(shipment.userInfo, shipment);
+      const newMail = await emailVerificationService.sendInvoiceNotification(shipment.userInfo, shipment);
+      console.log(newMail)
       return res.json({
         message: 'Shipment invoice sent successfully'
       });
     }
     catch (error) {
+      console.log(error)
       return res.status(500).json({ error: 'Error sending shipment invoice', errorMsg: error });
     }
   }
@@ -1427,12 +1431,14 @@ async deleteBooking(req, res) {
       if (!shipment) {
         return res.status(404).json({ error: 'Shipment not found' });
       }
-      await emailVerificationService.sendInvoiceNotification(shipment.userInfo, shipment);
+      const newMail = await emailVerificationService.sendInvoiceNotification(shipment.userInfo, shipment);
+      console.log(newMail)
       return res.json({
         message: 'Shipment invoice sent successfully'
       });
     }
     catch (error) {
+      console.log(error)
       return res.status(500).json({ error: 'Error sending shipment invoice', errorMsg: error });
     }
   }
