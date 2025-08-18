@@ -461,7 +461,7 @@ class EmailVerificationService {
             <div style="margin: 20px 0;">
               <h3 style="color: #555;">Invoice Details</h3>
               <p><strong>Invoice Number:</strong> ${shipment.id || 'N/A'}</p>
-              <p><strong>Amount:</strong> $${shipment.price ? shipment.price.toFixed(2) : 'N/A'}</p>
+              <p><strong>Amount:</strong> $${shipment.price ? shipment.price : 'N/A'}</p>
               <p><strong>Date Issued:</strong> ${shipment.createdAt ? new Date(shipment.createdAt).toLocaleDateString() : 'N/A'}</p>
             </div>
             <div style="margin: 20px 0;">
