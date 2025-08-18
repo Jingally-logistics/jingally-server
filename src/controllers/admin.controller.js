@@ -181,7 +181,7 @@ class AdminController {
           {
             model: User,
             as: 'user',
-            attributes: ['id', 'firstName', 'lastName', 'email', 'phone']
+            attributes: ['id', 'firstName', 'lastName', 'email', 'phone', 'jingallyId']
           },
           {
             model: Driver,
