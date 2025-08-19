@@ -1725,7 +1725,7 @@ router.put('/shipments/:id/amount', auth, adminController.updateShipmentAmount);
 
 /**
  * @swagger
- * /api/admin/shipments/{id}/amount:
+ * /api/admin/bookings/shipments/{id}/amount:
  *   put:
  *     summary: Update shipment booking amount
  *     tags: [Admin]
@@ -1754,6 +1754,6 @@ router.put('/shipments/:id/amount', auth, adminController.updateShipmentAmount);
  *       500:
  *         description: Server error
  */
-router.put('/booking/shipments/:id/amount', auth, adminController.updateShipmentBookingAmount);
+router.put('/bookings/shipments/:id/amount', auth, adminController.updateShipmentBookingAmount);
 
 module.exports = router;
